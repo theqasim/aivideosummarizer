@@ -140,7 +140,7 @@ function MicIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
 }
 
 function PaperclipIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>,
 ) {
   return (
     <svg

@@ -1,6 +1,17 @@
 "use client";
+import React, { SVGProps, useEffect, useRef, useState } from "react";
+import {
+  CardTitle,
+  CardDescription,
+  CardHeader,
+  CardContent,
+  Card,
+} from "@/components/ui/card";
+import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-import React, { useState, useEffect } from "react";
+// Assuming these icons are already defined elsewhere in your project
 
 export default function Chat() {
   const [messages, setMessages] = useState([
@@ -11,6 +22,7 @@ export default function Chat() {
     },
   ]);
   const [input, setInput] = useState("");
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // This is where you could load an existing conversation or handle initialization beyond the static system message.
@@ -46,30 +58,96 @@ export default function Chat() {
     setInput("");
   };
 
-  return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-      {messages.map(
-        (
-          m,
-          index // Use the index parameter provided by the map function
-        ) => (
-          <div key={index} className="whitespace-pre-wrap">
-            {" "}
-            {/* Adjusted line */}
-            {m.role === "user" ? "User: " : "AI: "}
-            {m.content}
-          </div>
-        )
-      )}
+  useEffect(() => {
+    // Ensure the chat container scrolls to the bottom on each update
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]); // Dependency array ensures this runs every time messages change
 
-      <form onSubmit={handleSubmit}>
-        <input
-          className="fixed bottom-0 w-full max-w-md p-2 text-black mb-8 border border-gray-300 rounded shadow-xl"
-          value={input}
-          placeholder="Say something..."
-          onChange={handleInputChange}
-        />
-      </form>
+  // Function to render a message component
+  const renderMessage = (
+    message: { role: any; content: any },
+    index: React.Key | null | undefined,
+  ) => (
+    <div
+      key={index}
+      className={`flex ${
+        message.role === "user" ? "justify-end" : "justify-start"
+      }`}
+    >
+      <div
+        className={`rounded-lg px-4 py-2 max-w-md ${
+          message.role === "user" ? "bg-blue-500" : "bg-gray-800"
+        }`}
+      >
+        <p className="text-sm text-white">{message.content}</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex justify-center items-center h-screen bg-white">
+      <Card
+        key="1"
+        className="w-full max-w-3xl mx-auto shadow-lg rounded-lg flex flex-col"
+      >
+        <CardHeader className="border-b p-4">
+          <div className="grid gap-1.5">
+            <CardTitle>Chat with AI Video Summarizer</CardTitle>
+            <CardDescription>
+              Ask me anything related to your uploaded video!
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="flex flex-col flex-1">
+          <Tabs defaultValue="conversation" className="flex flex-col flex-1">
+            <TabsList className="flex gap-4 border-b">
+              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="conversation">Conversation</TabsTrigger>
+            </TabsList>
+            <TabsContent className="flex-1 overflow-auto p-4" value="summary">
+              <p>This is a generic summary of the video content.</p>
+            </TabsContent>
+            <TabsContent
+              className="flex-1 overflow-auto p-4"
+              value="conversation"
+            >
+              <div
+                className="flex flex-col gap-4"
+                style={{ height: "65vh", overflowY: "auto" }}
+                ref={chatContainerRef}
+              >
+                {/* Render welcome message as the first item */}
+                {renderMessage(
+                  {
+                    role: "system",
+                    content:
+                      "Welcome! Ask me anything related to the video content.",
+                  },
+                  "welcome",
+                )}
+                {/* Continue rendering other messages */}
+                {messages
+                  .filter((message) => message.role !== "system")
+                  .map((message, index) => renderMessage(message, index))}
+              </div>
+            </TabsContent>
+            <div className="mt-auto p-4">
+              <form onSubmit={handleSubmit} className="flex gap-4">
+                <Input
+                  className="flex-1"
+                  placeholder="Type a message"
+                  value={input}
+                  onChange={handleInputChange}
+                />
+                <Button type="submit">Send</Button>
+              </form>
+            </div>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }
