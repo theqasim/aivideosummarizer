@@ -69,7 +69,7 @@ export default function Chat() {
   // Function to render a message component
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined,
+    index: React.Key | null | undefined
   ) => (
     <div
       key={index}
@@ -108,7 +108,18 @@ export default function Chat() {
               <TabsTrigger value="conversation">Conversation</TabsTrigger>
             </TabsList>
             <TabsContent className="flex-1 overflow-auto p-4" value="summary">
-              <p>This is a generic summary of the video content.</p>
+              <h1 className="text-xl text-bold">
+                <b>Title: </b>NextJS 14: A Complete Beginners Guide
+              </h1>
+              <h1 className="text-xl mt-2 text-bold">
+                <b>Summary:</b>
+              </h1>
+              <p className="mt-1">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quos
+                cumque ipsam accusantium ex sequi ducimus quas eligendi
+                cupiditate officiis consequuntur voluptatibus, natus dolores
+                inventore! Quidem tempore nisi veniam maiores quod!
+              </p>
             </TabsContent>
             <TabsContent
               className="flex-1 overflow-auto p-4"
@@ -126,25 +137,25 @@ export default function Chat() {
                     content:
                       "Welcome! Ask me anything related to the video content.",
                   },
-                  "welcome",
+                  "welcome"
                 )}
                 {/* Continue rendering other messages */}
                 {messages
                   .filter((message) => message.role !== "system")
                   .map((message, index) => renderMessage(message, index))}
               </div>
+              <div className="mt-auto p-4">
+                <form onSubmit={handleSubmit} className="flex gap-4">
+                  <Input
+                    className="flex-1"
+                    placeholder="Type a message"
+                    value={input}
+                    onChange={handleInputChange}
+                  />
+                  <Button type="submit">Send</Button>
+                </form>
+              </div>
             </TabsContent>
-            <div className="mt-auto p-4">
-              <form onSubmit={handleSubmit} className="flex gap-4">
-                <Input
-                  className="flex-1"
-                  placeholder="Type a message"
-                  value={input}
-                  onChange={handleInputChange}
-                />
-                <Button type="submit">Send</Button>
-              </form>
-            </div>
           </Tabs>
         </CardContent>
       </Card>
