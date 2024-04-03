@@ -10,11 +10,13 @@ import {
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { VideoOff } from "lucide-react";
 
 // Assuming these icons are already defined elsewhere in your project
 
 interface ChatProps {
   videoTranscript: string;
+  videoTitle: string;
 }
 
 interface Message {
@@ -22,7 +24,7 @@ interface Message {
   content: string;
 }
 
-export default function Chat({ videoTranscript }: ChatProps) {
+export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -44,6 +46,23 @@ export default function Chat({ videoTranscript }: ChatProps) {
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => setInput(e.target.value);
+
+  function formatVideoTranscript(videoTranscript: string) {
+    // Split the transcript by "**" (bold markers)
+    const parts = videoTranscript.split("**");
+
+    // Map through the parts and wrap every other part in <strong> tags
+    return parts.map((part, index) => {
+      // Even indices are regular text, odd indices are bold
+      if (index % 2 === 0) {
+        // Regular text
+        return part;
+      } else {
+        // Text to be bolded
+        return <strong key={index}>{part}</strong>;
+      }
+    });
+  }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -110,7 +129,7 @@ export default function Chat({ videoTranscript }: ChatProps) {
   );
 
   return (
-    <div className="flex justify-center items-center h-screen bg-white">
+    <div className="flex justify-center items-center h-screen">
       <Card
         key="1"
         className="w-full max-w-3xl mx-auto shadow-lg rounded-lg flex flex-col"
@@ -123,61 +142,67 @@ export default function Chat({ videoTranscript }: ChatProps) {
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="flex flex-col flex-1">
+        <CardContent className="flex flex-col flex-1 overflow-hidden">
           <Tabs defaultValue="conversation" className="flex flex-col flex-1">
             <TabsList className="flex gap-4 border-b">
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="conversation">Conversation</TabsTrigger>
             </TabsList>
-            <TabsContent className="flex-1 overflow-auto p-4" value="summary">
-              <h1 className="text-xl text-bold">
-                <b>Title: </b>NextJS 14: A Complete Beginners Guide
-              </h1>
-              <h1 className="text-xl mt-2 text-bold">
-                <b>Summary:</b>
-              </h1>
-              <p className="mt-1">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quos
-                cumque ipsam accusantium ex sequi ducimus quas eligendi
-                cupiditate officiis consequuntur voluptatibus, natus dolores
-                inventore! Quidem tempore nisi veniam maiores quod!
-              </p>
-            </TabsContent>
-            <TabsContent
-              className="flex-1 overflow-auto p-4"
-              value="conversation"
-            >
-              <div
-                className="flex flex-col gap-4"
-                style={{ height: "65vh", overflowY: "auto" }}
-                ref={chatContainerRef}
+            {/* Apply consistent styling for both tabs */}
+            <div className="flex flex-col flex-1 overflow-hidden">
+              <TabsContent className="flex-1 overflow-auto p-4" value="summary">
+                <div className="overflow-auto max-h-[75vh] p-2">
+                  {" "}
+                  {/* Adjust the max-height as needed */}
+                  <h1 className="text-xl text-bold">
+                    <b>Title: </b>
+                    {videoTitle}
+                  </h1>
+                  <h1 className="text-xl mt-2 text-bold">
+                    <b>Summary:</b>
+                  </h1>
+                  <p className="mt-1">
+                    {formatVideoTranscript(videoTranscript)}
+                  </p>
+                </div>
+              </TabsContent>
+
+              <TabsContent
+                className="flex-1 overflow-auto p-4"
+                value="conversation"
               >
-                {/* Render welcome message as the first item */}
-                {renderMessage(
-                  {
-                    role: "system",
-                    content:
-                      "Welcome! Ask me anything related to the video content.",
-                  },
-                  "welcome",
-                )}
-                {/* Continue rendering other messages */}
-                {messages
-                  .filter((message) => message.role !== "system")
-                  .map((message, index) => renderMessage(message, index))}
-              </div>
-              <div className="mt-auto p-4">
-                <form onSubmit={handleSubmit} className="flex gap-4">
-                  <Input
-                    className="flex-1 mt-2"
-                    placeholder="Type a message"
-                    value={input}
-                    onChange={handleInputChange}
-                  />
-                  <Button type="submit">Send</Button>
-                </form>
-              </div>
-            </TabsContent>
+                <div
+                  className="flex flex-col gap-4"
+                  style={{ height: "65vh", overflowY: "auto" }}
+                  ref={chatContainerRef}
+                >
+                  {/* Render welcome message as the first item */}
+                  {renderMessage(
+                    {
+                      role: "system",
+                      content:
+                        "Welcome! Ask me anything related to the video content.",
+                    },
+                    "welcome",
+                  )}
+                  {/* Continue rendering other messages */}
+                  {messages
+                    .filter((message) => message.role !== "system")
+                    .map((message, index) => renderMessage(message, index))}
+                </div>
+                <div className="mt-auto p-4">
+                  <form onSubmit={handleSubmit} className="flex gap-4">
+                    <Input
+                      className="flex-1 mt-2"
+                      placeholder="Type a message"
+                      value={input}
+                      onChange={handleInputChange}
+                    />
+                    <Button type="submit">Send</Button>
+                  </form>
+                </div>
+              </TabsContent>
+            </div>
           </Tabs>
         </CardContent>
       </Card>

@@ -9,6 +9,7 @@ interface YouTubeURLInputProps {
   setYoutubeURL: React.Dispatch<React.SetStateAction<string>>;
   setVideoSummary: React.Dispatch<React.SetStateAction<string>>;
   setVideoTranscript: React.Dispatch<React.SetStateAction<string>>;
+  setVideoTitle: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function YouTubeURLInput({
@@ -16,6 +17,7 @@ export default function YouTubeURLInput({
   setYoutubeURL,
   setVideoSummary,
   setVideoTranscript,
+  setVideoTitle,
 }: YouTubeURLInputProps) {
   // State to hold the input value
   // const [youtubeURL, setYoutubeURL] = useState("");
@@ -57,7 +59,7 @@ export default function YouTubeURLInput({
       console.log("Fetched Title:", title);
 
       // Assuming formattedTranscript is the data you want to summarize
-      const summaryResponse = await fetch("/api/summarise", {
+      const summaryResponse = await fetch("/api/summarize", {
         // Adjust the endpoint as necessary
         method: "POST",
         headers: {
@@ -87,6 +89,7 @@ export default function YouTubeURLInput({
 
       const { summary } = await summaryResponse.json();
       console.log("Summary:", summary);
+      setVideoTitle(title);
       setVideoSummary(summary); // Assuming you want to update the parent state with the summary
       setVideoTranscript(summary); // Update parent state
     } catch (error) {
@@ -104,7 +107,7 @@ export default function YouTubeURLInput({
         Get YouTube transcript and use AI to summarize YouTube videos in one
         click for free online with NoteGPT's YouTube summary tool.
       </p>
-      <div className="flex justify-center items-center border-2 border-dashed border-orange-400 rounded-lg p-4">
+      <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
         <Input
           className="flex-1 mr-4"
           placeholder="https://www.youtube.com/watch?v=l2dpEjmMJ0w"
@@ -112,10 +115,7 @@ export default function YouTubeURLInput({
           value={youtubeURL}
           onChange={handleInputChange}
         />
-        <Button
-          className="bg-orange-500 hover:bg-orange-600 text-white"
-          onClick={handleSubmit}
-        >
+        <Button className=" text-white" onClick={handleSubmit}>
           Generate Summary
         </Button>
       </div>

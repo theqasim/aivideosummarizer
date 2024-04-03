@@ -8,6 +8,7 @@ export default function VideoChatPage() {
   const [youtubeURL, setYoutubeURL] = useState("");
   const [videoSummary, setVideoSummary] = useState("");
   const [videoTranscript, setVideoTranscript] = useState("");
+  const [videoTitle, setVideoTitle] = useState("");
 
   // Add more state and handlers here as necessary
 
@@ -22,10 +23,13 @@ export default function VideoChatPage() {
         setYoutubeURL={setYoutubeURL}
         setVideoSummary={setVideoSummary}
         setVideoTranscript={setVideoTranscript}
+        setVideoTitle={setVideoTitle}
       />
 
       {/* Chat Component */}
-      {videoTranscript && <Chat videoTranscript={videoTranscript} />}
+      {videoTranscript && (
+        <Chat videoTranscript={videoTranscript} videoTitle={videoTitle} />
+      )}
     </div>
   );
 }
