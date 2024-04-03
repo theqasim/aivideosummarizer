@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export default function Component() {
+export default function YouTubeURLInput() {
   // State to hold the input value
   const [youtubeURL, setYoutubeURL] = useState("");
 

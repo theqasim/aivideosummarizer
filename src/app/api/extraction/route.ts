@@ -11,7 +11,7 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
         "X-RapidAPI-Key": apiKey,
         "X-RapidAPI-Host": "youtube-transcriptor.p.rapidapi.com",
       },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -23,7 +23,16 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
 
 function formatTranscript(transcription: any[]): string {
   return transcription
-    .map((entry: { subtitle: string }) => entry.subtitle.replace(/&#39;/g, "'"))
+    .map((entry: { subtitle: any }) => {
+      try {
+        return typeof entry.subtitle === "string"
+          ? entry.subtitle.replace(/&#39;/g, "'")
+          : "Error: Non-string subtitle";
+      } catch (error) {
+        console.error("Error processing entry:", entry, error);
+        return "Error: Exception caught";
+      }
+    })
     .join(" ");
 }
 
@@ -45,23 +54,26 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const url = body.url;
     const videoID = extractVideoID(url);
+    console.log(videoID);
 
     if (!videoID) {
       return new NextResponse(
         JSON.stringify({ error: "Invalid YouTube URL" }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const apiKey = process.env.RAPIDAPI_KEY;
     if (typeof apiKey !== "string") {
       throw new Error(
-        "RapidAPI key is undefined. Please check your environment variables."
+        "RapidAPI key is undefined. Please check your environment variables.",
       );
     }
 
     const data = await fetchTranscript(videoID, apiKey);
+    console.log(data);
     const title = data[0].title;
+    console.log(title);
     const formattedTranscript = formatTranscript(data[0].transcription);
 
     // Returning the title and formatted transcript
@@ -72,7 +84,7 @@ export async function POST(req: NextRequest) {
     console.error(error);
     return new NextResponse(
       JSON.stringify({ error: "Failed to process request" }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

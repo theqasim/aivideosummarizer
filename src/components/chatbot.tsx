@@ -13,19 +13,33 @@ import { Button } from "@/components/ui/button";
 
 // Assuming these icons are already defined elsewhere in your project
 
-export default function Chat() {
-  const [messages, setMessages] = useState([
-    {
-      role: "system",
-      content: `As an AI, you have access to a summary of a video's transcript, which outlines the key points and themes discussed in the video. Your task is to use this summary to provide insights and answer questions related to the video's content. Focus on the information contained in the summary and avoid making assumptions or inferences about content not explicitly mentioned. Here is the summary: In 2017, the speaker embarked on a year-long journey to develop an app that, despite the effort, ended up attracting zero users. However, not deterred by past setbacks, they recently pursued a new startup idea, leveraging artificial intelligence to expedite the development process. Within just 3 days, the product, named "Poopup," was created and launched, earning $1,000 in profit within the first 24 hours. "Poopup" is a script for websites that displays popup notifications to enhance website conversion rates by demonstrating empathy towards visitors' pain points. The speaker outlines the product's functionality, explaining how customers can customize and deploy popup notifications on their websites to improve engagement. This project exemplifies several key themes: The entrepreneurial journey's highs and lows, as illustrated by the initial failure and subsequent success. The power of perseverance and resilience, where past failures did not deter the speaker from continuing to innovate. Rapid development and deployment enabled by artificial intelligence, showcasing how AI can significantly reduce development time and facilitate quick market testing. Learning from past experiences, as the idea for "Poopup" was inspired by user feedback from a previous project. The speaker also shares insights on finding startup ideas, emphasizing that ideas come through engagement in various projects, and stresses the importance of starting somewhere to discover real problems that need solving. They highlight the use of AI, particularly GitHub Copilot, in speeding up coding processes and assisting in tasks ranging from coding to content generation. Finally, the speaker shares their unconventional approach to shipping products quickly, such as foregoing TypeScript, Git branches, and testing in the initial stages, to focus on getting the product to market. This journey from concept to launch illustrates not just the application of AI in development but also broader lessons on innovation, adaptation, and the entrepreneurial spirit.`,
-    },
-  ]);
+interface ChatProps {
+  videoTranscript: string;
+}
+
+interface Message {
+  role: "system" | "user" | "assistant"; // Updated to include 'assistant'
+  content: string;
+}
+
+export default function Chat({ videoTranscript }: ChatProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // This is where you could load an existing conversation or handle initialization beyond the static system message.
-  }, []);
+    if (videoTranscript) {
+      setMessages([
+        {
+          role: "system",
+          content: ` As an AI, your primary role is to offer detailed responses and insights related to the content of a specific video. When responding, rely exclusively on the information provided in the video's transcript. Your answers should appear as though they are derived from a comprehensive understanding of the video's subject matter, without explicitly stating or implying that they are based directly on a transcript. Focus your responses on the video's content, avoiding speculation or providing information beyond what is contained in the video. Here's the transcript you'll use to inform your responses:  ${videoTranscript.slice(
+            0,
+            100,
+          )}`,
+        },
+      ]);
+    }
+  }, [videoTranscript]);
 
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -33,21 +47,30 @@ export default function Chat() {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const userMessage = { role: "user", content: input };
-    setMessages((msgs) => [...msgs, userMessage]);
+    // Assume userMessage is already defined as before
+    const userMessage: Message = { role: "user", content: input };
+
+    // Include the user message in the state before making the API call
+    setMessages((currentMessages) => [...currentMessages, userMessage]);
 
     try {
+      // Adjust the payload to include an array of messages
+      const payload = {
+        messages: [...messages, userMessage], // Assuming 'messages' needs to include the current state messages plus the new user message
+      };
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error("Network response was not ok");
 
       const { aiMessage } = await response.json();
-      setMessages((msgs) => [
-        ...msgs,
+      // Process AI response as before
+      setMessages((currentMessages) => [
+        ...currentMessages,
         { role: "assistant", content: aiMessage },
       ]);
     } catch (error) {
@@ -146,7 +169,7 @@ export default function Chat() {
               <div className="mt-auto p-4">
                 <form onSubmit={handleSubmit} className="flex gap-4">
                   <Input
-                    className="flex-1"
+                    className="flex-1 mt-2"
                     placeholder="Type a message"
                     value={input}
                     onChange={handleInputChange}
