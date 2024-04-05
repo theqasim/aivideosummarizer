@@ -85,7 +85,7 @@ export default function Chat({
   // Function to render a message component
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined,
+    index: React.Key | null | undefined
   ) => (
     <div
       key={index}
@@ -159,7 +159,7 @@ export default function Chat({
                       content:
                         "Welcome! Ask me anything related to the video content.",
                     },
-                    "welcome",
+                    "welcome"
                   )}
                   {/* Continue rendering other messages */}
                   {messages

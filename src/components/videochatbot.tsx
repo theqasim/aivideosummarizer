@@ -30,7 +30,7 @@ export default function VideoChatPage() {
         />
 
         {videoTranscript && (
-          <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4 w-full">
+          <div className="flex flex-col md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-4 w-full">
             <div className="flex-1">
               <Chat
                 videoTranscript={videoTranscript}
@@ -39,7 +39,7 @@ export default function VideoChatPage() {
                 threadId={threadId}
               />
             </div>
-            <div className="w-full md:w-1/3 flex-none">
+            <div className="w-full md:w-1/2 flex-none">
               <div className="aspect-w-16 aspect-h-9">
                 <YouTubeEmbed videoId={videoId} />
               </div>

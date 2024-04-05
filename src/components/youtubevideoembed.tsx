@@ -11,7 +11,7 @@ const YouTubeEmbed = ({ videoId }: YouTubeEmbedProps) => {
     <div
       style={{
         overflow: "hidden",
-        paddingBottom: "56.25%",
+        paddingBottom: "56.25%", // 16:9 aspect ratio
         position: "relative",
         height: "0",
       }}
