@@ -51,7 +51,7 @@ export async function POST(req: Request) {
         await openai.beta.threads.messages.create(thread.id, {
           role: "user",
           content:
-            "This is the last part of the transcript. Please provide a detailed summary.",
+            "This is the last part of the transcript. Please provide a full breakdown of the entire video missing no details based on all the transcripts provided.",
         });
       }
     }
