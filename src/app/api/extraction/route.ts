@@ -11,7 +11,7 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
         "X-RapidAPI-Key": apiKey,
         "X-RapidAPI-Host": "youtube-transcriptor.p.rapidapi.com",
       },
-    },
+    }
   );
 
   if (!response.ok) {
@@ -21,7 +21,38 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
   return response.json();
 }
 
-function formatTranscript(transcription: any[]): string {
+// function formatTranscript(transcription: any[]): string {
+//   return transcription
+//     .map((entry: { subtitle: any }) => {
+//       try {
+//         return typeof entry.subtitle === "string"
+//           ? entry.subtitle.replace(/&#39;/g, "'")
+//           : "Error: Non-string subtitle";
+//       } catch (error) {
+//         console.error("Error processing entry:", entry, error);
+//         return "Error: Exception caught";
+//       }
+//     })
+//     .join(" ");
+// }
+
+function formatTranscript(transcription: any[]): string | void {
+  // Calculate total length of all subtitles first
+  const totalLength = transcription.reduce((acc, entry) => {
+    if (typeof entry.subtitle === "string") {
+      return acc + entry.subtitle.length;
+    }
+    return acc;
+  }, 0);
+
+  if (totalLength > 32768) {
+    alert("Transcript too long");
+    throw new Error("Transcript too long");
+  }
+
+  console.log("Accepted Transcript Length:" + totalLength);
+
+  // Proceed with processing if within limit
   return transcription
     .map((entry: { subtitle: any }) => {
       try {
@@ -59,14 +90,14 @@ export async function POST(req: NextRequest) {
     if (!videoID) {
       return new NextResponse(
         JSON.stringify({ error: "Invalid YouTube URL" }),
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     const apiKey = process.env.RAPIDAPI_KEY;
     if (typeof apiKey !== "string") {
       throw new Error(
-        "RapidAPI key is undefined. Please check your environment variables.",
+        "RapidAPI key is undefined. Please check your environment variables."
       );
     }
 
@@ -75,19 +106,24 @@ export async function POST(req: NextRequest) {
     const title = data[0].title;
     console.log(title);
     const formattedTranscript = formatTranscript(data[0].transcription);
+    console.log("Length:" + formatTranscript.length);
+    if (formatTranscript.length > 32768) {
+      console.log("Too long bruv");
+      return;
+    }
 
     // Returning the title and formatted transcript
     return new NextResponse(
       JSON.stringify({ title, formattedTranscript, videoID }),
       {
         status: 200,
-      },
+      }
     );
   } catch (error) {
     console.error(error);
     return new NextResponse(
       JSON.stringify({ error: "Failed to process request" }),
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

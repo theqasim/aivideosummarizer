@@ -11,6 +11,7 @@ interface YouTubeURLInputProps {
   setVideoTranscript: React.Dispatch<React.SetStateAction<string>>;
   setVideoTitle: React.Dispatch<React.SetStateAction<string>>;
   setVideoId: React.Dispatch<React.SetStateAction<string>>;
+  setThreadId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function YouTubeURLInput({
@@ -20,6 +21,7 @@ export default function YouTubeURLInput({
   setVideoTranscript,
   setVideoTitle,
   setVideoId,
+  setThreadId,
 }: YouTubeURLInputProps) {
   // Function to update state with the input value
   const handleInputChange = (e: {
@@ -59,26 +61,14 @@ export default function YouTubeURLInput({
       console.log("YouTube Video ID: " + videoID);
       setVideoId(videoID);
 
-      // Assuming formattedTranscript is the data you want to summarize
-      const summaryResponse = await fetch("/api/summarize", {
+      const summaryResponse = await fetch("/api/assistantinitial", {
         // Adjust the endpoint as necessary
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         // Format the transcript according to the expected message structure
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: `As an AI, your primary role is to analyze and summarize key insights from a specific video's content, using the provided transcript. Focus on identifying and explaining the main themes, notable points, and any significant moments mentioned in the transcript. Avoid speculation and restrict your analysis to the content of the transcript. Aim to provide concise, insightful summaries that reflect a deep understanding of the video's subject matter. Here are some questions to guide your analysis: - What are the main themes discussed in the video? - Are there any surprising or particularly noteworthy points made? - Can you identify any recurring patterns or ideas in the dialogue? Based on this transcript, please provide a detailed analysis answering the above questions, ensuring your insights are directly derived from and supported by the transcript content.(
-                0,
-                100
-              )}`,
-            },
-            { role: "user", content: formattedTranscript },
-          ],
-        }),
+        body: JSON.stringify({ transcript: formattedTranscript }),
       });
 
       if (!summaryResponse.ok) {
@@ -88,11 +78,12 @@ export default function YouTubeURLInput({
         return; // Exit early on error
       }
 
-      const { summary } = await summaryResponse.json();
+      const { summary, threadId } = await summaryResponse.json();
       console.log("Summary:", summary);
       setVideoTitle(title);
-      // setVideoSummary(summary); // Assuming you want to update the parent state with the summary
+      setThreadId(threadId);
       setVideoTranscript(formattedTranscript); // Update parent state
+      setVideoSummary(summary);
     } catch (error) {
       console.error("Error fetching summary:", error);
       alert("Failed to generate summary. Please try again.");

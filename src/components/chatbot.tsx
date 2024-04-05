@@ -17,6 +17,8 @@ import { VideoOff } from "lucide-react";
 interface ChatProps {
   videoTranscript: string;
   videoTitle: string;
+  videoSummary: string;
+  threadId: string;
 }
 
 interface Message {
@@ -24,45 +26,19 @@ interface Message {
   content: string;
 }
 
-export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
+export default function Chat({
+  videoTranscript,
+  videoTitle,
+  videoSummary,
+  threadId,
+}: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (videoTranscript) {
-      setMessages([
-        {
-          role: "system",
-          content: `You are a chatbot, your primary role is to offer detailed responses and insights related to the content of a specific video. When responding, rely exclusively on the information provided in the video's transcript. Your answers should appear as though they are derived from a comprehensive understanding of the video's subject matter, without explicitly stating or implying that they are based directly on a transcript. Focus your responses on the video's content, avoiding speculation or providing information beyond what is contained in the video. Here's the transcript you'll use to inform your responses: ${videoTranscript.slice(
-            0,
-            100,
-          )}. Do not provide any information that is not from within the video.`,
-        },
-      ]);
-    }
-  }, [videoTranscript]);
-
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => setInput(e.target.value);
-
-  function formatVideoTranscript(videoTranscript: string) {
-    // Split the transcript by "**" (bold markers)
-    const parts = videoTranscript.split("**");
-
-    // Map through the parts and wrap every other part in <strong> tags
-    return parts.map((part, index) => {
-      // Even indices are regular text, odd indices are bold
-      if (index % 2 === 0) {
-        // Regular text
-        return part;
-      } else {
-        // Text to be bolded
-        return <strong key={index}>{part}</strong>;
-      }
-    });
-  }
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -74,25 +50,24 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
     // Include the user message in the state before making the API call
     setMessages((currentMessages) => [...currentMessages, userMessage]);
 
+    // Include the user message in the state before making the API call
+
     try {
       // Adjust the payload to include an array of messages
-      const payload = {
-        messages: [...messages, userMessage], // Assuming 'messages' needs to include the current state messages plus the new user message
-      };
 
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/assistantconversation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ input: input, threadId: threadId }),
       });
 
       if (!response.ok) throw new Error("Network response was not ok");
 
-      const { aiMessage } = await response.json();
+      const { assistantResponse } = await response.json();
       // Process AI response as before
       setMessages((currentMessages) => [
         ...currentMessages,
-        { role: "assistant", content: aiMessage },
+        { role: "assistant", content: assistantResponse },
       ]);
     } catch (error) {
       console.error("Failed to fetch the AI's response:", error);
@@ -164,9 +139,7 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
                   <h1 className="text-xl mt-2 text-bold">
                     <b>Summary:</b>
                   </h1>
-                  <p className="mt-1">
-                    {formatVideoTranscript(videoTranscript)}
-                  </p>
+                  <p className="mt-1">{videoSummary}</p>
                 </div>
               </TabsContent>
 

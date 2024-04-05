@@ -10,6 +10,7 @@ export default function VideoChatPage() {
   const [videoTranscript, setVideoTranscript] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
   const [videoId, setVideoId] = useState("");
+  const [threadId, setThreadId] = useState("");
 
   useEffect(() => {
     console.log("videoTranscript updated:", videoTranscript);
@@ -25,12 +26,18 @@ export default function VideoChatPage() {
           setVideoTranscript={setVideoTranscript}
           setVideoTitle={setVideoTitle}
           setVideoId={setVideoId}
+          setThreadId={setThreadId}
         />
 
         {videoTranscript && (
           <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4 w-full">
             <div className="flex-1">
-              <Chat videoTranscript={videoTranscript} videoTitle={videoTitle} />
+              <Chat
+                videoTranscript={videoTranscript}
+                videoTitle={videoTitle}
+                videoSummary={videoSummary}
+                threadId={threadId}
+              />
             </div>
             <div className="w-full md:w-1/3 flex-none">
               <div className="aspect-w-16 aspect-h-9">
