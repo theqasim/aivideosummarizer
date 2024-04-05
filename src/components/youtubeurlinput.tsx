@@ -10,6 +10,7 @@ interface YouTubeURLInputProps {
   setVideoSummary: React.Dispatch<React.SetStateAction<string>>;
   setVideoTranscript: React.Dispatch<React.SetStateAction<string>>;
   setVideoTitle: React.Dispatch<React.SetStateAction<string>>;
+  setVideoId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function YouTubeURLInput({
@@ -18,10 +19,8 @@ export default function YouTubeURLInput({
   setVideoSummary,
   setVideoTranscript,
   setVideoTitle,
+  setVideoId,
 }: YouTubeURLInputProps) {
-  // State to hold the input value
-  // const [youtubeURL, setYoutubeURL] = useState("");
-
   // Function to update state with the input value
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -54,9 +53,11 @@ export default function YouTubeURLInput({
         return; // Exit early on error
       }
 
-      const { formattedTranscript, title } = await response.json(); // Parse the JSON data from the response
+      const { formattedTranscript, title, videoID } = await response.json(); // Parse the JSON data from the response
       console.log(formattedTranscript); // Log to verify the fetched data
       console.log("Fetched Title:", title);
+      console.log("YouTube Video ID: " + videoID);
+      setVideoId(videoID);
 
       // Assuming formattedTranscript is the data you want to summarize
       const summaryResponse = await fetch("/api/summarize", {
@@ -90,8 +91,8 @@ export default function YouTubeURLInput({
       const { summary } = await summaryResponse.json();
       console.log("Summary:", summary);
       setVideoTitle(title);
-      setVideoSummary(summary); // Assuming you want to update the parent state with the summary
-      setVideoTranscript(summary); // Update parent state
+      // setVideoSummary(summary); // Assuming you want to update the parent state with the summary
+      setVideoTranscript(formattedTranscript); // Update parent state
     } catch (error) {
       console.error("Error fetching summary:", error);
       alert("Failed to generate summary. Please try again.");

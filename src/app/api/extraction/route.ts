@@ -77,9 +77,12 @@ export async function POST(req: NextRequest) {
     const formattedTranscript = formatTranscript(data[0].transcription);
 
     // Returning the title and formatted transcript
-    return new NextResponse(JSON.stringify({ title, formattedTranscript }), {
-      status: 200,
-    });
+    return new NextResponse(
+      JSON.stringify({ title, formattedTranscript, videoID }),
+      {
+        status: 200,
+      },
+    );
   } catch (error) {
     console.error(error);
     return new NextResponse(

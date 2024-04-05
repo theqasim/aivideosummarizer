@@ -34,10 +34,10 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
       setMessages([
         {
           role: "system",
-          content: ` As an AI, your primary role is to offer detailed responses and insights related to the content of a specific video. When responding, rely exclusively on the information provided in the video's transcript. Your answers should appear as though they are derived from a comprehensive understanding of the video's subject matter, without explicitly stating or implying that they are based directly on a transcript. Focus your responses on the video's content, avoiding speculation or providing information beyond what is contained in the video. Here's the transcript you'll use to inform your responses:  ${videoTranscript.slice(
+          content: `You are a chatbot, your primary role is to offer detailed responses and insights related to the content of a specific video. When responding, rely exclusively on the information provided in the video's transcript. Your answers should appear as though they are derived from a comprehensive understanding of the video's subject matter, without explicitly stating or implying that they are based directly on a transcript. Focus your responses on the video's content, avoiding speculation or providing information beyond what is contained in the video. Here's the transcript you'll use to inform your responses: ${videoTranscript.slice(
             0,
             100,
-          )}`,
+          )}. Do not provide any information that is not from within the video.`,
         },
       ]);
     }
@@ -66,8 +66,10 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+
     // Assume userMessage is already defined as before
     const userMessage: Message = { role: "user", content: input };
+    setInput("");
 
     // Include the user message in the state before making the API call
     setMessages((currentMessages) => [...currentMessages, userMessage]);
@@ -95,8 +97,6 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
     } catch (error) {
       console.error("Failed to fetch the AI's response:", error);
     }
-
-    setInput("");
   };
 
   useEffect(() => {
@@ -129,7 +129,7 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
   );
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center">
       <Card
         key="1"
         className="w-full max-w-3xl mx-auto shadow-lg rounded-lg flex flex-col"
@@ -150,8 +150,11 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
             </TabsList>
             {/* Apply consistent styling for both tabs */}
             <div className="flex flex-col flex-1 overflow-hidden">
-              <TabsContent className="flex-1 overflow-auto p-4" value="summary">
-                <div className="overflow-auto max-h-[75vh] p-2">
+              <TabsContent
+                className="flex-1 overflow-auto text-md"
+                value="summary"
+              >
+                <div className="overflow-auto max-h-[75vh] p-3">
                   {" "}
                   {/* Adjust the max-height as needed */}
                   <h1 className="text-xl text-bold">
@@ -198,7 +201,9 @@ export default function Chat({ videoTranscript, videoTitle }: ChatProps) {
                       value={input}
                       onChange={handleInputChange}
                     />
-                    <Button type="submit">Send</Button>
+                    <Button className="mt-2" type="submit">
+                      Send
+                    </Button>
                   </form>
                 </div>
               </TabsContent>

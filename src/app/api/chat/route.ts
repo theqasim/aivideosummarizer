@@ -10,10 +10,10 @@ export async function POST(req: Request) {
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo-preview",
+      model: "gpt-3.5-turbo-16k",
       messages: messages,
-      temperature: 0.4,
     });
+    console.log("Model:" + response.model);
 
     const aiMessage = response.choices[0].message.content;
 
