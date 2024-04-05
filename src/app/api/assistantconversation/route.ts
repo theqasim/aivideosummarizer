@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     const runRetrieve = await openai.beta.threads.runs.retrieve(
       threadId,
-      run.id
+      run.id,
     );
 
     console.log("Run Retrieved:" + runRetrieve.status);
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       // Retrieve the run's status again to see if it has changed
       const updatedRun = await openai.beta.threads.runs.retrieve(
         threadId,
-        run.id
+        run.id,
       );
 
       // Update the runStatus with the latest status from the updated run

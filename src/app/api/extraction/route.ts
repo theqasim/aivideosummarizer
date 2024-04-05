@@ -2,6 +2,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+let longTranscriptLengthStatus = false;
+
 async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
   const response = await fetch(
     `https://youtube-transcriptor.p.rapidapi.com/transcript?video_id=${videoID}&lang=en`,
@@ -11,7 +13,7 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
         "X-RapidAPI-Key": apiKey,
         "X-RapidAPI-Host": "youtube-transcriptor.p.rapidapi.com",
       },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -46,11 +48,9 @@ function formatTranscript(transcription: any[]): string | void {
   }, 0);
 
   if (totalLength > 32768) {
-    alert("Transcript too long");
-    throw new Error("Transcript too long");
+    longTranscriptLengthStatus = true;
+    console.log("Long Video Transcript Detected: " + totalLength + " / 32768");
   }
-
-  console.log("Accepted Transcript Length:" + totalLength);
 
   // Proceed with processing if within limit
   return transcription
@@ -90,14 +90,14 @@ export async function POST(req: NextRequest) {
     if (!videoID) {
       return new NextResponse(
         JSON.stringify({ error: "Invalid YouTube URL" }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const apiKey = process.env.RAPIDAPI_KEY;
     if (typeof apiKey !== "string") {
       throw new Error(
-        "RapidAPI key is undefined. Please check your environment variables."
+        "RapidAPI key is undefined. Please check your environment variables.",
       );
     }
 
@@ -106,24 +106,24 @@ export async function POST(req: NextRequest) {
     const title = data[0].title;
     console.log(title);
     const formattedTranscript = formatTranscript(data[0].transcription);
-    console.log("Length:" + formatTranscript.length);
-    if (formatTranscript.length > 32768) {
-      console.log("Too long bruv");
-      return;
-    }
 
     // Returning the title and formatted transcript
     return new NextResponse(
-      JSON.stringify({ title, formattedTranscript, videoID }),
+      JSON.stringify({
+        title,
+        formattedTranscript,
+        videoID,
+        longTranscriptLengthStatus,
+      }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error(error);
     return new NextResponse(
       JSON.stringify({ error: "Failed to process request" }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

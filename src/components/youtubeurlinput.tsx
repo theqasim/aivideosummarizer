@@ -55,13 +55,22 @@ export default function YouTubeURLInput({
         return; // Exit early on error
       }
 
-      const { formattedTranscript, title, videoID } = await response.json(); // Parse the JSON data from the response
-      console.log(formattedTranscript); // Log to verify the fetched data
-      console.log("Fetched Title:", title);
-      console.log("YouTube Video ID: " + videoID);
+      let { formattedTranscript, title, videoID, longTranscriptLengthStatus } =
+        await response.json(); // Parse the JSON data from the response
+      // console.log(formattedTranscript); // Log to verify the fetched data
+      // console.log("Fetched Title:", title);
+      // console.log("YouTube Video ID: " + videoID);
+      // console.log("Long Transcript Video: " + longTranscriptLengthStatus);
       setVideoId(videoID);
 
-      const summaryResponse = await fetch("/api/assistantinitial", {
+      let endpoint = "/api/assistantinitial";
+
+      if ((longTranscriptLengthStatus = true)) {
+        console.log("Long Video Transcript Endpoint being used");
+        endpoint = "/api/longassistantinitial";
+      }
+
+      const summaryResponse = await fetch(endpoint, {
         // Adjust the endpoint as necessary
         method: "POST",
         headers: {
