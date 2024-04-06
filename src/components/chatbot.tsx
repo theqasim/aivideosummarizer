@@ -35,6 +35,8 @@ export default function Chat({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isAITyping, setIsAITyping] = useState(false);
 
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -42,6 +44,7 @@ export default function Chat({
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    setIsButtonDisabled(true);
 
     // Assume userMessage is already defined as before
     const userMessage: Message = { role: "user", content: input };
@@ -49,6 +52,7 @@ export default function Chat({
 
     // Include the user message in the state before making the API call
     setMessages((currentMessages) => [...currentMessages, userMessage]);
+    setIsAITyping(true);
 
     // Include the user message in the state before making the API call
 
@@ -72,6 +76,8 @@ export default function Chat({
     } catch (error) {
       console.error("Failed to fetch the AI's response:", error);
     }
+    setIsAITyping(false);
+    setIsButtonDisabled(false);
   };
 
   useEffect(() => {
@@ -99,6 +105,14 @@ export default function Chat({
         }`}
       >
         <p className="text-sm text-white">{message.content}</p>
+      </div>
+    </div>
+  );
+
+  const renderTypingIndicator = () => (
+    <div className="flex justify-start">
+      <div className="rounded-lg px-4 py-2 bg-gray-800 max-w-md">
+        <p className="text-sm text-white font-bold">AI is typing...</p>
       </div>
     </div>
   );
@@ -154,6 +168,7 @@ export default function Chat({
                   ref={chatContainerRef}
                 >
                   {/* Render welcome message as the first item */}
+
                   {renderMessage(
                     {
                       role: "system",
@@ -167,6 +182,7 @@ export default function Chat({
                   {messages
                     .filter((message) => message.role !== "system")
                     .map((message, index) => renderMessage(message, index))}
+                  {isAITyping && renderTypingIndicator()}
                 </div>
                 <div className="mt-auto p-4">
                   <form onSubmit={handleSubmit} className="flex gap-4">
@@ -176,7 +192,11 @@ export default function Chat({
                       value={input}
                       onChange={handleInputChange}
                     />
-                    <Button className="mt-2" type="submit">
+                    <Button
+                      className="mt-2"
+                      type="submit"
+                      disabled={isButtonDisabled}
+                    >
                       Send
                     </Button>
                   </form>
