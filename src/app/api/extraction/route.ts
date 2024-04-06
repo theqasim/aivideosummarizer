@@ -2,8 +2,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-let longTranscriptLengthStatus = false;
-
 async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
   const response = await fetch(
     `https://youtube-transcriptor.p.rapidapi.com/transcript?video_id=${videoID}&lang=en`,
@@ -37,6 +35,7 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
 //     })
 //     .join(" ");
 // }
+let longTranscriptLengthStatus = false;
 
 function formatTranscript(transcription: any[]): string | void {
   // Calculate total length of all subtitles first
@@ -47,10 +46,14 @@ function formatTranscript(transcription: any[]): string | void {
     return acc;
   }, 0);
 
+  console.log("this is the total length:" + totalLength);
+
   if (totalLength > 32768) {
     longTranscriptLengthStatus = true;
     console.log("Long Video Transcript Detected: " + totalLength + " / 32768");
   }
+
+  console.log(longTranscriptLengthStatus);
 
   // Proceed with processing if within limit
   return transcription

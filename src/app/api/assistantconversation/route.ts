@@ -28,7 +28,8 @@ export async function POST(req: Request) {
 
     const run = await openai.beta.threads.runs.create(threadId, {
       assistant_id: assistant.id,
-      instructions: "Do not assume the video is made by the user",
+      instructions:
+        "Do not assume the video is made by the user, and do not mention you're getting the insights from the transcript. ",
     });
 
     const runRetrieve = await openai.beta.threads.runs.retrieve(

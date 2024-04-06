@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import LoadingModal from "./loadingmodal";
 
 interface YouTubeURLInputProps {
   youtubeURL: string;
@@ -23,6 +24,12 @@ export default function YouTubeURLInput({
   setVideoId,
   setThreadId,
 }: YouTubeURLInputProps) {
+  const [isLoading, setIsLoading] = useState(false); // Correct as is
+  const [loadingText, setLoadingText] = useState(
+    "Retrieving video, please wait...",
+  ); // Initialize with a string
+  const [loadingTextColor, setLoadingTextColor] = useState("text-black"); // Keep consistent naming
+
   // Function to update state with the input value
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -32,12 +39,22 @@ export default function YouTubeURLInput({
 
   // Event handler for form submission
   const handleSubmit = async () => {
+    const youtubeUrlPattern =
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+
     if (!youtubeURL) {
       alert("Please enter a YouTube URL.");
       return;
+    } else if (!youtubeUrlPattern.test(youtubeURL)) {
+      alert("Please enter a valid YouTube video URL.");
+      return;
     }
 
+    setIsLoading(true); // Start loading before fetch calls
+
     try {
+      let endpoint = "/api/assistantinitial";
+
       const response = await fetch("/api/extraction", {
         method: "POST",
         headers: {
@@ -63,11 +80,23 @@ export default function YouTubeURLInput({
       // console.log("Long Transcript Video: " + longTranscriptLengthStatus);
       setVideoId(videoID);
 
-      let endpoint = "/api/assistantinitial";
+      console.log(
+        "transcription length status before the if block" +
+          longTranscriptLengthStatus,
+      );
 
-      if ((longTranscriptLengthStatus = true)) {
+      if (longTranscriptLengthStatus == true) {
+        setLoadingText(
+          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
+        );
+        setLoadingTextColor("text-black");
         console.log("Long Video Transcript Endpoint being used");
         endpoint = "/api/longassistantinitial";
+      } else {
+        setLoadingText(
+          "Just a moment while we tailor your video summary and prepapre our chatbot for interaction.",
+        );
+        setLoadingTextColor("text-black");
       }
 
       const summaryResponse = await fetch(endpoint, {
@@ -81,6 +110,7 @@ export default function YouTubeURLInput({
       });
 
       if (!summaryResponse.ok) {
+        setIsLoading(false);
         const errorData = await summaryResponse.json();
         console.error("Error fetching summary:", errorData);
         alert(`Failed to summarize: ${errorData.error}`);
@@ -93,6 +123,7 @@ export default function YouTubeURLInput({
       setThreadId(threadId);
       setVideoTranscript(formattedTranscript); // Update parent state
       setVideoSummary(summary);
+      setIsLoading(false); // Stop loading after all operations are done
     } catch (error) {
       console.error("Error fetching summary:", error);
       alert("Failed to generate summary. Please try again.");
@@ -101,6 +132,10 @@ export default function YouTubeURLInput({
 
   return (
     <div className="max-w-4xl mx-auto p-8">
+      {isLoading && (
+        <LoadingModal text={loadingText} textColor={loadingTextColor} />
+      )}
+
       <h1 className="text-5xl font-bold text-center mb-6">
         YouTube Video Summarizer
       </h1>
@@ -116,7 +151,10 @@ export default function YouTubeURLInput({
           value={youtubeURL}
           onChange={handleInputChange}
         />
-        <Button className=" text-white" onClick={handleSubmit}>
+        <Button
+          className=" text-white hover:cursor-pointer"
+          onClick={handleSubmit}
+        >
           Generate Summary
         </Button>
       </div>

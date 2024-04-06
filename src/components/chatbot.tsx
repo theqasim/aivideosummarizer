@@ -113,13 +113,14 @@ export default function Chat({
           <div className="grid gap-1.5">
             <CardTitle>Chat with AI Video Summarizer</CardTitle>
             <CardDescription>
-              Ask me anything related to your uploaded video!
+              Ask me anything related to the video titled {videoTitle}
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1 overflow-hidden">
           <Tabs defaultValue="conversation" className="flex flex-col flex-1">
             <TabsList className="flex gap-4 border-b">
+              <TabsTrigger value="transcript">Transcript</TabsTrigger>
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="conversation">Conversation</TabsTrigger>
             </TabsList>
@@ -157,7 +158,8 @@ export default function Chat({
                     {
                       role: "system",
                       content:
-                        "Welcome! Ask me anything related to the video content.",
+                        "Welcome! Ask me anything related to the video titled " +
+                        videoTitle,
                     },
                     "welcome",
                   )}
@@ -178,6 +180,17 @@ export default function Chat({
                       Send
                     </Button>
                   </form>
+                </div>
+              </TabsContent>
+              <TabsContent
+                className="flex-1 overflow-auto text-md"
+                value="transcript"
+              >
+                <div className="overflow-auto max-h-[75vh] p-3">
+                  <h1 className="text-xl mt-2 text-bold">
+                    <b>Transcript:</b>
+                  </h1>
+                  <p className="mt-1">{videoTranscript}</p>
                 </div>
               </TabsContent>
             </div>

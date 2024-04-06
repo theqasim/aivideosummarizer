@@ -20,10 +20,11 @@ export async function POST(req: Request) {
     console.log(assistant);
 
     const thread = await openai.beta.threads.create();
-    console.log(thread);
+    //console.log(thread);
+    console.log("Transcript:" + transcript);
     await openai.beta.threads.messages.create(thread.id, {
       role: "user",
-      content: `Hi, here is the transcript for the YouTube Video, understand it and give me a summary: "${transcript}".`,
+      content: `Hi, here is the transcript for the YouTube Video, understand it and give me a detailed summary: "${transcript}".`,
     });
 
     const run = await openai.beta.threads.runs.create(thread.id, {
