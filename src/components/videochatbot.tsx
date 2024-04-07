@@ -18,6 +18,10 @@ export default function VideoChatPage() {
     console.log("videoTranscript updated:", videoTranscript);
   }, [videoTranscript]);
 
+  useEffect(() => {
+    console.log("Highlights updated:", highlights);
+  }, [highlights]);
+
   return (
     <div className="flex flex-col items-center min-h-screen p-4">
       <div className="w-full max-w-6xl mx-auto space-y-4">

@@ -137,12 +137,15 @@ export async function POST(req: Request) {
     console.log(highlights);
     console.log("Conversation Thread ID:" + thread.id);
 
-    return new Response(JSON.stringify({ summary, threadId: thread.id }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
+    return new Response(
+      JSON.stringify({ summary, threadId: thread.id, highlights }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: error }), {

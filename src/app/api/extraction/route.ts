@@ -20,21 +20,6 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
 
   return response.json();
 }
-
-// function formatTranscript(transcription: any[]): string {
-//   return transcription
-//     .map((entry: { subtitle: any }) => {
-//       try {
-//         return typeof entry.subtitle === "string"
-//           ? entry.subtitle.replace(/&#39;/g, "'")
-//           : "Error: Non-string subtitle";
-//       } catch (error) {
-//         console.error("Error processing entry:", entry, error);
-//         return "Error: Exception caught";
-//       }
-//     })
-//     .join(" ");
-// }
 let longTranscriptLengthStatus = false;
 
 function formatTranscript(transcription: any[]): string | void {
