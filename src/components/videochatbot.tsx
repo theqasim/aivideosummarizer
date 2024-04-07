@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Chat from "./chatbot";
 import YouTubeURLInput from "./youtubeurlinput";
+import Highlights from "./videohighlights";
 import YouTubeEmbed from "./youtubevideoembed";
 
 export default function VideoChatPage() {
@@ -11,6 +12,7 @@ export default function VideoChatPage() {
   const [videoTitle, setVideoTitle] = useState("");
   const [videoId, setVideoId] = useState("");
   const [threadId, setThreadId] = useState("");
+  const [highlights, setHighlights] = useState("");
 
   useEffect(() => {
     console.log("videoTranscript updated:", videoTranscript);
@@ -27,6 +29,7 @@ export default function VideoChatPage() {
           setVideoTitle={setVideoTitle}
           setVideoId={setVideoId}
           setThreadId={setThreadId}
+          setHighlights={setHighlights}
         />
 
         {videoTranscript && (
@@ -39,10 +42,12 @@ export default function VideoChatPage() {
                 threadId={threadId}
               />
             </div>
-            <div className="w-full md:w-1/2 flex-none">
+            <div className="w-full lg:w-1/2 flex-none space-y-4">
               <div className="aspect-w-16 aspect-h-9">
                 <YouTubeEmbed videoId={videoId} />
               </div>
+              {/* Add the Highlights component */}
+              <Highlights title={videoTitle} highlights={highlights} />
             </div>
           </div>
         )}

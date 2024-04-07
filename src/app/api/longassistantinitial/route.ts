@@ -58,6 +58,7 @@ export async function POST(req: Request) {
 
     // Wait for the completion of the run
     let runStatus = "pending";
+    let highlightsRunStatus = "pending";
     let run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id,
       instructions: "Do not assume the video is made by the user",
@@ -79,6 +80,62 @@ export async function POST(req: Request) {
     const summary = firstElement.text.value;
 
     console.log(summary);
+
+    // Getting highlights
+
+    const highlightsMessage = await openai.beta.threads.messages.create(
+      thread.id,
+      {
+        role: "user",
+        content:
+          "Generate a bullet point list of the highlights for the entire video",
+      },
+    );
+
+    const highlightsRun = await openai.beta.threads.runs.create(thread.id, {
+      assistant_id: assistant.id,
+      instructions: "Do not assume the video is made by the user",
+    });
+
+    console.log("got here");
+    const runRetrieveHighlights = await openai.beta.threads.runs.retrieve(
+      thread.id,
+      run.id,
+    );
+
+    console.log("got here too");
+
+    console.log("Run Retrieved:" + runRetrieveHighlights.status);
+
+    // Use a loop to continuously check the status
+    while (highlightsRunStatus !== "completed") {
+      // Retrieve the run's status again to see if it has changed
+      const highlightsUpdatedRun = await openai.beta.threads.runs.retrieve(
+        thread.id,
+        highlightsRun.id,
+      );
+
+      // Update the runStatus with the latest status from the updated run
+      highlightsRunStatus = highlightsUpdatedRun.status;
+
+      console.log("Current Highlight Run Status:", highlightsRunStatus);
+
+      // Wait for a short period before checking again to avoid hitting rate limits
+      // This waits for 2 seconds before the next check
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    // console.log(messages);
+
+    const messagesResponseHighlights = await openai.beta.threads.messages.list(
+      thread.id,
+    );
+
+    const firstElementHighlights = messagesResponseHighlights.data[0]
+      .content[0] as TextContentBlock;
+    const highlights = firstElementHighlights.text.value;
+    console.log(highlights);
+    console.log("Conversation Thread ID:" + thread.id);
 
     return new Response(JSON.stringify({ summary, threadId: thread.id }), {
       status: 200,
