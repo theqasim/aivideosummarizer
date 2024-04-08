@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
 interface HighlightsProps {
@@ -62,15 +61,12 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
                   | Promise<React.AwaitedReactNode>
                   | null
                   | undefined,
-                index: React.Key | null | undefined
-              ) => <p key={index}>{point}</p>
+                index: React.Key | null | undefined,
+              ) => <p key={index}>{point}</p>,
             )
           )}
         </CardContent>
       </Card>
-      <Button onClick={newSession} className="max-w-50">
-        test
-      </Button>
     </div>
   );
 };

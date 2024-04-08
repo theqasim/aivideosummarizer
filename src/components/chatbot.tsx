@@ -10,7 +10,6 @@ import {
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { VideoOff } from "lucide-react";
 
 interface ChatProps {
   videoTranscript: string;
