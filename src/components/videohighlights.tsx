@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 interface HighlightsProps {
   title: string;
@@ -26,38 +28,50 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
     }
   })();
 
+  const router = useRouter();
+  const newSession = async () => {
+    try {
+      router.refresh();
+    } catch (error) {}
+  };
+
   return (
-    <Card className="shadow-lg rounded-lg max-h-[60vh] overflow-auto">
-      <CardHeader className="border-b p-4 bg-gray-800">
-        <CardTitle className="text-lg font-semibold text-white">
-          Highlights for <b className="font-bold text-red-500">{title}</b>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-4">
-        {isError || !bulletPointsArray ? (
-          <p>{highlights}</p>
-        ) : (
-          bulletPointsArray.map(
-            (
-              point:
-                | string
-                | number
-                | boolean
-                | React.ReactElement<
-                    any,
-                    string | React.JSXElementConstructor<any>
-                  >
-                | Iterable<React.ReactNode>
-                | React.ReactPortal
-                | Promise<React.AwaitedReactNode>
-                | null
-                | undefined,
-              index: React.Key | null | undefined,
-            ) => <p key={index}>{point}</p>,
-          )
-        )}
-      </CardContent>
-    </Card>
+    <div>
+      <Card className="shadow-lg rounded-lg max-h-[60vh] overflow-auto">
+        <CardHeader className="border-b p-4 bg-gray-800">
+          <CardTitle className="text-lg font-semibold text-white">
+            Highlights for <b className="font-bold text-red-500">{title}</b>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          {isError || !bulletPointsArray ? (
+            <p>{highlights}</p>
+          ) : (
+            bulletPointsArray.map(
+              (
+                point:
+                  | string
+                  | number
+                  | boolean
+                  | React.ReactElement<
+                      any,
+                      string | React.JSXElementConstructor<any>
+                    >
+                  | Iterable<React.ReactNode>
+                  | React.ReactPortal
+                  | Promise<React.AwaitedReactNode>
+                  | null
+                  | undefined,
+                index: React.Key | null | undefined
+              ) => <p key={index}>{point}</p>
+            )
+          )}
+        </CardContent>
+      </Card>
+      <Button onClick={newSession} className="max-w-50">
+        test
+      </Button>
+    </div>
   );
 };
 
