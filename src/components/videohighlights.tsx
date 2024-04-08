@@ -20,7 +20,7 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
     try {
       return extractBulletPoints(highlights);
     } catch (error) {
-      console.error("Error extracting bullet points:", error);
+      console.error("Error extracting bullet points:, error");
       setIsError(true);
       return null;
     }
@@ -30,7 +30,7 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
     <Card className="shadow-lg rounded-lg max-h-[60vh] overflow-auto">
       <CardHeader className="border-b p-4 bg-gray-800">
         <CardTitle className="text-lg font-bold text-white">
-          Highlights for "{title}"
+          Highlights for &quote;{title}&quote;
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4">
@@ -52,8 +52,8 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
                 | Promise<React.AwaitedReactNode>
                 | null
                 | undefined,
-              index: React.Key | null | undefined,
-            ) => <p key={index}>{point}</p>,
+              index: React.Key | null | undefined
+            ) => <p key={index}>{point}</p>
           )
         )}
       </CardContent>
