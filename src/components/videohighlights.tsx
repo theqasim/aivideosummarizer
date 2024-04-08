@@ -31,7 +31,7 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
   const router = useRouter();
   const newSession = async () => {
     try {
-      router.refresh();
+      router.push("https://aivideosummarizer.vercel.app");
     } catch (error) {}
   };
 
