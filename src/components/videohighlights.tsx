@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
 
 interface HighlightsProps {
   title: string;
@@ -26,13 +25,6 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
       return null;
     }
   })();
-
-  const router = useRouter();
-  const newSession = async () => {
-    try {
-      router.push("https://aivideosummarizer.vercel.app");
-    } catch (error) {}
-  };
 
   return (
     <div>

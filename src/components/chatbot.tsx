@@ -111,7 +111,7 @@ export default function Chat({
       >
         <CardHeader className="border-b-2 p-4">
           <div className="grid gap-1.5">
-            <CardTitle>Chat with AI Video Summarizer</CardTitle>
+            <CardTitle>Chat with AI Video Summariser</CardTitle>
             <CardDescription>
               Ask me anything related to the video titled
               <b className="font-bold text-red-500"> {videoTitle}</b>

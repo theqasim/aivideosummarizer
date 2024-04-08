@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import LoadingModal from "./loadingmodal";
 
 interface YouTubeURLInputProps {
@@ -27,24 +25,43 @@ export default function YouTubeURLInput({
   setThreadId,
   setHighlights,
 }: YouTubeURLInputProps) {
-  const router = useRouter();
-
   const [isLoading, setIsLoading] = useState(false);
-  const [isGenerateSummaryButtonDisabled, SetIsGenerateSummaryButtonDisabled] =
-    useState(false);
+
   const [loadingText, setLoadingText] = useState(
     "Retrieving video, please wait...",
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
+  const [videoAnalysed, setVideoAnalysed] = useState(false);
   const [loadingVisibility, setLoadingVisibility] = useState("block");
   const [closeVisibility, setCloseVisibility] = useState("none");
   const [generateSummaryButtonText, setGenerateSummaryButtonText] =
-    useState("Analyze Video");
+    useState("Analyse Video");
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setYoutubeURL(e.target.value);
   };
+  const resetAllStates = () => {
+    setYoutubeURL("");
+    setVideoSummary("");
+    setVideoTranscript("");
+    setVideoTitle("");
+    setVideoId("");
+    setThreadId("");
+    setHighlights("");
+    setIsLoading(false);
+    setLoadingText("Retrieving video, please wait...");
+    setLoadingTextColor("text-black");
+    setLoadingVisibility("block");
+    setCloseVisibility("none");
+    setVideoAnalysed(false);
+    setGenerateSummaryButtonText("Analyse Video");
+  };
+
+  // Include this button in your component's return statement
+  <button onClick={resetAllStates} className="your-button-classes">
+    Reset Page
+  </button>;
 
   const scrollToBottom = () => {
     window.scrollTo({
@@ -92,7 +109,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analyzing Video: Your video has no subtitles available therefore it cannot be analyzed",
+          "Error Analyzing Video: Your video has no subtitles available therefore it cannot be analysed",
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -129,7 +146,7 @@ export default function YouTubeURLInput({
         setIsLoading(false);
         const errorData = await summaryResponse.json();
         console.error("Error fetching summary:", errorData);
-        alert(`Failed to summarize: ${errorData.error}`);
+        alert(`Failed to summarise: ${errorData.error}`);
         return;
       }
 
@@ -139,8 +156,8 @@ export default function YouTubeURLInput({
       setThreadId(threadId);
       setVideoTranscript(formattedTranscript);
       setVideoSummary(summary);
-      setGenerateSummaryButtonText("Video Analyzed");
-      SetIsGenerateSummaryButtonDisabled(true);
+      setGenerateSummaryButtonText("Analyse another video");
+      setVideoAnalysed(true);
       setIsLoading(false);
       scrollToBottom();
     } catch (error) {
@@ -162,7 +179,7 @@ export default function YouTubeURLInput({
       )}
 
       <h1 className="text-5xl font-bold text-center mb-6 animate-fade-up animate-once animate-duration-[750ms]">
-        AI YouTube Video Summarizer & Chatbot
+        AI YouTube Video Summariser & Chatbot
       </h1>
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
         Gain insights from YouTube videos in seconds, not hours. Enter a YouTube
@@ -178,8 +195,7 @@ export default function YouTubeURLInput({
           onChange={handleInputChange}
         />
         <button
-          disabled={isGenerateSummaryButtonDisabled}
-          onClick={handleSubmit}
+          onClick={videoAnalysed ? resetAllStates : handleSubmit}
           className="relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover: focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
         >
           <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />

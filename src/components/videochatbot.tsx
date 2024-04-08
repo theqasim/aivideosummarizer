@@ -38,7 +38,7 @@ export default function VideoChatPage() {
                 threadId={threadId}
               />
             </div>
-            <div className="w-full lg:w-1/2 flex-none space-y-4">
+            <div className="w-full md:w-1/2 flex-none space-y-4">
               <div className="aspect-w-16 aspect-h-9">
                 <YouTubeEmbed videoId={videoId} />
               </div>
