@@ -110,17 +110,18 @@ export default function Chat({
         key="1"
         className="w-full max-w-3xl mx-auto shadow-lg rounded-lg flex flex-col   "
       >
-        <CardHeader className="border-b p-4">
+        <CardHeader className="border-b-2 p-4">
           <div className="grid gap-1.5">
             <CardTitle>Chat with AI Video Summarizer</CardTitle>
             <CardDescription>
-              Ask me anything related to the video titled {videoTitle}
+              Ask me anything related to the video titled
+              <b className="font-bold text-red-500"> {videoTitle}</b>
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1 overflow-hidden">
           <Tabs defaultValue="conversation" className="flex flex-col flex-1">
-            <TabsList className="flex gap-4 border-b">
+            <TabsList className="flex gap-4 border-b-2">
               <TabsTrigger value="transcript">Transcript</TabsTrigger>
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="conversation">Conversation</TabsTrigger>

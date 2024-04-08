@@ -29,8 +29,8 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
   return (
     <Card className="shadow-lg rounded-lg max-h-[60vh] overflow-auto">
       <CardHeader className="border-b p-4 bg-gray-800">
-        <CardTitle className="text-lg font-bold text-white">
-          Highlights for &quote;{title}&quote;
+        <CardTitle className="text-lg font-semibold text-white">
+          Highlights for <b className="font-bold text-red-500">{title}</b>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4">
@@ -52,8 +52,8 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
                 | Promise<React.AwaitedReactNode>
                 | null
                 | undefined,
-              index: React.Key | null | undefined
-            ) => <p key={index}>{point}</p>
+              index: React.Key | null | undefined,
+            ) => <p key={index}>{point}</p>,
           )
         )}
       </CardContent>
