@@ -12,8 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { VideoOff } from "lucide-react";
 
-// Assuming these icons are already defined elsewhere in your project
-
 interface ChatProps {
   videoTranscript: string;
   videoTitle: string;
@@ -22,7 +20,7 @@ interface ChatProps {
 }
 
 interface Message {
-  role: "system" | "user" | "assistant"; // Updated to include 'assistant'
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -45,20 +43,12 @@ export default function Chat({
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsButtonDisabled(true);
-
-    // Assume userMessage is already defined as before
     const userMessage: Message = { role: "user", content: input };
     setInput("");
-
-    // Include the user message in the state before making the API call
     setMessages((currentMessages) => [...currentMessages, userMessage]);
     setIsAITyping(true);
 
-    // Include the user message in the state before making the API call
-
     try {
-      // Adjust the payload to include an array of messages
-
       const response = await fetch("/api/assistantconversation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,7 +58,6 @@ export default function Chat({
       if (!response.ok) throw new Error("Network response was not ok");
 
       const { assistantResponse } = await response.json();
-      // Process AI response as before
       setMessages((currentMessages) => [
         ...currentMessages,
         { role: "assistant", content: assistantResponse },
@@ -81,14 +70,12 @@ export default function Chat({
   };
 
   useEffect(() => {
-    // Ensure the chat container scrolls to the bottom on each update
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [messages]); // Dependency array ensures this runs every time messages change
+  }, [messages]);
 
-  // Function to render a message component
   const renderMessage = (
     message: { role: any; content: any },
     index: React.Key | null | undefined,
@@ -112,16 +99,16 @@ export default function Chat({
   const renderTypingIndicator = () => (
     <div className="flex justify-start">
       <div className="rounded-lg px-4 py-2 bg-gray-800 max-w-md">
-        <p className="text-sm text-white font-bold">AI is typing...</p>
+        <p className="text-sm text-white font-bold">AI Chatbot is typing...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center ">
       <Card
         key="1"
-        className="w-full max-w-3xl mx-auto shadow-lg rounded-lg flex flex-col"
+        className="w-full max-w-3xl mx-auto shadow-lg rounded-lg flex flex-col   "
       >
         <CardHeader className="border-b p-4">
           <div className="grid gap-1.5">
@@ -138,15 +125,12 @@ export default function Chat({
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="conversation">Conversation</TabsTrigger>
             </TabsList>
-            {/* Apply consistent styling for both tabs */}
             <div className="flex flex-col flex-1 overflow-hidden">
               <TabsContent
                 className="flex-1 overflow-auto text-md"
                 value="summary"
               >
                 <div className="overflow-auto max-h-[75vh] p-3">
-                  {" "}
-                  {/* Adjust the max-height as needed */}
                   <h1 className="text-xl text-bold">
                     <b>Title: </b>
                     {videoTitle}
@@ -167,8 +151,6 @@ export default function Chat({
                   style={{ height: "65vh", overflowY: "auto" }}
                   ref={chatContainerRef}
                 >
-                  {/* Render welcome message as the first item */}
-
                   {renderMessage(
                     {
                       role: "system",
@@ -178,7 +160,6 @@ export default function Chat({
                     },
                     "welcome",
                   )}
-                  {/* Continue rendering other messages */}
                   {messages
                     .filter((message) => message.role !== "system")
                     .map((message, index) => renderMessage(message, index))}

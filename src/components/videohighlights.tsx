@@ -9,14 +9,12 @@ interface HighlightsProps {
 const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
   const [isError, setIsError] = useState(false);
   function extractBulletPoints(text: string) {
-    // This regex matches a dash followed by a space and any non-whitespace character.
-    // It also accounts for cases where a bullet point might start immediately after a period.
     const bulletPointRegex = /(?:\s|^)(-)\s+(\S)/g;
     return text
-      .replace(bulletPointRegex, "\n$1 $2") // Replace matched patterns with a newline character
-      .trim() // Trim whitespace from the start and end
-      .split("\n") // Split the text into an array at each newline
-      .filter(Boolean); // Remove any empty strings
+      .replace(bulletPointRegex, "\n$1 $2")
+      .trim()
+      .split("\n")
+      .filter(Boolean);
   }
   const bulletPointsArray = (() => {
     try {
@@ -24,7 +22,7 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
     } catch (error) {
       console.error("Error extracting bullet points:", error);
       setIsError(true);
-      return null; // Return null to indicate failure
+      return null;
     }
   })();
 

@@ -23,7 +23,6 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
 let longTranscriptLengthStatus = false;
 
 function formatTranscript(transcription: any[]): string | void {
-  // Calculate total length of all subtitles first
   const totalLength = transcription.reduce((acc, entry) => {
     if (typeof entry.subtitle === "string") {
       return acc + entry.subtitle.length;
@@ -31,16 +30,11 @@ function formatTranscript(transcription: any[]): string | void {
     return acc;
   }, 0);
 
-  console.log("this is the total length:" + totalLength);
-
   if (totalLength > 32768) {
     longTranscriptLengthStatus = true;
     console.log("Long Video Transcript Detected: " + totalLength + " / 32768");
   }
 
-  console.log(longTranscriptLengthStatus);
-
-  // Proceed with processing if within limit
   return transcription
     .map((entry: { subtitle: any }) => {
       try {
@@ -73,7 +67,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const url = body.url;
     const videoID = extractVideoID(url);
-    console.log(videoID);
 
     if (!videoID) {
       return new NextResponse(
@@ -90,12 +83,10 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await fetchTranscript(videoID, apiKey);
-    console.log(data);
     const title = data[0].title;
     console.log(title);
     const formattedTranscript = formatTranscript(data[0].transcription);
 
-    // Returning the title and formatted transcript
     return new NextResponse(
       JSON.stringify({
         title,

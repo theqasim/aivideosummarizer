@@ -14,14 +14,6 @@ export default function VideoChatPage() {
   const [threadId, setThreadId] = useState("");
   const [highlights, setHighlights] = useState("");
 
-  useEffect(() => {
-    console.log("videoTranscript updated:", videoTranscript);
-  }, [videoTranscript]);
-
-  useEffect(() => {
-    console.log("Highlights updated:", highlights);
-  }, [highlights]);
-
   return (
     <div className="flex flex-col items-center min-h-screen p-4">
       <div className="w-full max-w-6xl mx-auto space-y-4">
@@ -50,7 +42,7 @@ export default function VideoChatPage() {
               <div className="aspect-w-16 aspect-h-9">
                 <YouTubeEmbed videoId={videoId} />
               </div>
-              {/* Add the Highlights component */}
+
               <Highlights title={videoTitle} highlights={highlights} />
             </div>
           </div>

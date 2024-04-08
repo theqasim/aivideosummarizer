@@ -29,18 +29,17 @@ export default function YouTubeURLInput({
 }: YouTubeURLInputProps) {
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false); // Correct as is
+  const [isLoading, setIsLoading] = useState(false);
   const [isGenerateSummaryButtonDisabled, SetIsGenerateSummaryButtonDisabled] =
     useState(false);
   const [loadingText, setLoadingText] = useState(
     "Retrieving video, please wait...",
-  ); // Initialize with a string
-  const [loadingTextColor, setLoadingTextColor] = useState("text-black"); // Keep consistent naming
+  );
+  const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [loadingVisibility, setLoadingVisibility] = useState("block");
   const [closeVisibility, setCloseVisibility] = useState("none");
   const [generateSummaryButtonText, setGenerateSummaryButtonText] =
     useState("Generate Summary");
-  // Function to update state with the input value
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
@@ -55,25 +54,21 @@ export default function YouTubeURLInput({
   };
 
   const handleCloseModal = () => {
-    setIsLoading(false); // Set the modal to be invisible
+    setIsLoading(false);
   };
 
   const pasteClipboardContent = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setYoutubeURL(text); // Assuming setYoutubeURL is your state setter function for the YouTube URL
+      setYoutubeURL(text);
     } catch (error) {
       console.error("Error pasting content from clipboard:", error);
-      console.log("loading visibility:" + loadingVisibility);
       alert(
         "Failed to paste content from clipboard. Make sure to give permission if prompted.",
       );
     }
-    // console.log("being pushed");
-    // router.push("http://localhost:3000");
   };
 
-  // Event handler for form submission
   const handleSubmit = async () => {
     const youtubeUrlPattern =
       /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
@@ -90,7 +85,7 @@ export default function YouTubeURLInput({
     setLoadingTextColor("text-black");
     setLoadingText("Retrieving video, please wait...");
 
-    setIsLoading(true); // Start loading before fetch calls
+    setIsLoading(true);
 
     try {
       let endpoint = "/api/assistantinitial";
@@ -104,32 +99,21 @@ export default function YouTubeURLInput({
       });
 
       if (!response.ok) {
-        // This will capture HTTP status codes such as 400 and 500.
-        // You could also alert or display the error message from the response here
-        const errorData = await response.json(); // Assuming the server responds with JSON-formatted error messages
+        const errorData = await response.json();
         console.error("Error fetching summary:", errorData);
-        // alert(`Failed to generate summary: ${errorData.error}`);
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
           "Error Analyzing Video: Your video has no subtitles available therefore it cannot be analyzed",
         );
         setLoadingTextColor("text-red-500");
-        return; // Exit early on error
+        return;
       }
 
       let { formattedTranscript, title, videoID, longTranscriptLengthStatus } =
-        await response.json(); // Parse the JSON data from the response
-      // console.log(formattedTranscript); // Log to verify the fetched data
-      // console.log("Fetched Title:", title);
-      // console.log("YouTube Video ID: " + videoID);
-      // console.log("Long Transcript Video: " + longTranscriptLengthStatus);
-      setVideoId(videoID);
+        await response.json();
 
-      console.log(
-        "transcription length status before the if block" +
-          longTranscriptLengthStatus,
-      );
+      setVideoId(videoID);
 
       if (longTranscriptLengthStatus == true) {
         setLoadingText(
@@ -146,12 +130,10 @@ export default function YouTubeURLInput({
       }
 
       const summaryResponse = await fetch(endpoint, {
-        // Adjust the endpoint as necessary
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // Format the transcript according to the expected message structure
         body: JSON.stringify({ transcript: formattedTranscript }),
       });
 
@@ -160,20 +142,18 @@ export default function YouTubeURLInput({
         const errorData = await summaryResponse.json();
         console.error("Error fetching summary:", errorData);
         alert(`Failed to summarize: ${errorData.error}`);
-        return; // Exit early on error
+        return;
       }
 
       const { summary, threadId, highlights } = await summaryResponse.json();
-      console.log("Summary:", summary);
-      console.log("Highlights from API:" + highlights);
       setVideoTitle(title);
       setHighlights(highlights);
       setThreadId(threadId);
-      setVideoTranscript(formattedTranscript); // Update parent state
+      setVideoTranscript(formattedTranscript);
       setVideoSummary(summary);
       setGenerateSummaryButtonText("Video Summarised");
       SetIsGenerateSummaryButtonDisabled(true);
-      setIsLoading(false); // Stop loading after all operations are done
+      setIsLoading(false);
       scrollToBottom();
     } catch (error) {
       console.error("Error fetching summary:", error);
@@ -194,11 +174,12 @@ export default function YouTubeURLInput({
       )}
 
       <h1 className="text-5xl font-bold text-center mb-6">
-        YouTube Video Summarizer
+        AI YouTube Video Summarizer & Chatbot
       </h1>
       <p className="text-lg text-center mb-8">
-        Get YouTube transcript and use AI to summarize YouTube videos in one
-        click for free online with NoteGPT's YouTube summary tool.
+        Gain insights from YouTube videos in seconds, not hours. Enter a YouTube
+        video below to be given an in depth summary, key highlights from the
+        video and a chatbot trained on the content of the video.
       </p>
       <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
         <Input
@@ -213,7 +194,7 @@ export default function YouTubeURLInput({
           onClick={pasteClipboardContent}
         >
           <svg
-            className="w-6 h-6" // Adjust size as needed
+            className="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

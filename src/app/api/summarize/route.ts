@@ -4,7 +4,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Exporting a named function for the POST method
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
@@ -17,7 +16,6 @@ export async function POST(req: Request) {
 
     const summary = response.choices[0].message.content;
 
-    // Return the AI message in a JSON response
     return new Response(JSON.stringify({ summary }), {
       status: 200,
       headers: {

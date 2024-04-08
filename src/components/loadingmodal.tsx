@@ -5,7 +5,7 @@ interface LoadingModalProps {
   textColor?: string;
   loadingVisibility: string;
   closeVisibility: string;
-  onClose: () => void; // Add a callback function to handle closing the modal
+  onClose: () => void;
 }
 
 const LoadingModal: React.FC<LoadingModalProps> = ({
@@ -13,13 +13,13 @@ const LoadingModal: React.FC<LoadingModalProps> = ({
   textColor = "text-black",
   loadingVisibility,
   onClose,
-  closeVisibility, // Destructure the onClose function from props
+  closeVisibility,
 }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex justify-center items-center">
       <div className="bg-white p-6 w-1/3 rounded-lg shadow-xl flex flex-col items-center relative">
         <button
-          onClick={onClose} // Call the onClose function when the button is clicked
+          onClick={onClose}
           className="absolute top-0 left-0 p-4 text-black font-bold text-2xl hover:cursor-pointer"
           style={{ display: closeVisibility }}
         >
