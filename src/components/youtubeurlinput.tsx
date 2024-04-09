@@ -189,9 +189,9 @@ export default function YouTubeURLInput({
         AI YouTube Video Summariser Chatbot
       </h1>
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
-        Gain insights from YouTube videos in seconds, not hours. Enter a YouTube
-        video below to be given an in depth summary, key highlights from the
-        video and a chatbot trained on the content of the video.
+        Discover insights from YouTube videos in seconds. Simply enter the URL
+        of a YouTube video to receive a detailed summary, the highlights, and
+        access to a chatbot that's trained specifically on the video's content.
       </p>
       <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
         <Input
