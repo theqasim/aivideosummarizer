@@ -33,7 +33,7 @@ export default function YouTubeURLInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -114,7 +114,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analyzing Video: Your video has no subtitles available therefore it cannot be analysed",
+          "Error Analyzing Video: Your video has no subtitles available therefore it cannot be analysed"
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -127,14 +127,14 @@ export default function YouTubeURLInput({
 
       if (longTranscriptLengthStatus == true) {
         setLoadingText(
-          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
+          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!"
         );
         setLoadingTextColor("text-black");
         console.log("Long Video Transcript Endpoint being used");
         endpoint = "/api/longassistantinitial";
       } else {
         setLoadingText(
-          "Just a moment while we tailor your video summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your video summary and prepare our chatbot for interaction."
         );
         setLoadingTextColor("text-black");
       }
@@ -184,7 +184,7 @@ export default function YouTubeURLInput({
       )}
 
       <h1
-        className={`text-5xl font-bold text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
+        className={`text-4xl md:text=5xl font-bold sm:text-4x1 text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
       >
         AI YouTube Video Summariser Chatbot
       </h1>
