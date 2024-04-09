@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { TextContentBlock } from "openai/resources/beta/threads/index.mjs";
+export const maxDuration = 300;
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -28,12 +29,12 @@ export async function POST(req: Request) {
 
     const runRetrieve = await openai.beta.threads.runs.retrieve(
       threadId,
-      run.id,
+      run.id
     );
     while (runStatus !== "completed") {
       const updatedRun = await openai.beta.threads.runs.retrieve(
         threadId,
-        run.id,
+        run.id
       );
       runStatus = updatedRun.status;
 

@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import { TextContentBlock } from "openai/resources/beta/threads/index.mjs";
+export const maxDuration = 300;
+
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

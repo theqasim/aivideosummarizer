@@ -1,6 +1,7 @@
 // pages/api/extraction.ts
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+export const maxDuration = 300;
 
 async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
   const response = await fetch(
