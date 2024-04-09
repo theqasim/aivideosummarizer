@@ -3,6 +3,11 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import LoadingModal from "./loadingmodal";
+import localFont from "next/font/local";
+
+const fontspring = localFont({
+  src: "../.././public/fonts/Fontspring-integralcf-demibold.otf",
+});
 
 interface YouTubeURLInputProps {
   youtubeURL: string;
@@ -178,8 +183,10 @@ export default function YouTubeURLInput({
         />
       )}
 
-      <h1 className="text-5xl font-bold text-center mb-6 animate-fade-up animate-once animate-duration-[750ms]">
-        AI YouTube Video Summariser & Chatbot
+      <h1
+        className={`text-5xl font-bold text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
+      >
+        AI YouTube Video Summariser Chatbot
       </h1>
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
         Gain insights from YouTube videos in seconds, not hours. Enter a YouTube
@@ -196,7 +203,7 @@ export default function YouTubeURLInput({
         />
         <button
           onClick={videoAnalysed ? resetAllStates : handleSubmit}
-          className="relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover: focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+          className={`relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover: focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50`}
         >
           <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
           <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
