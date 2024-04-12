@@ -77,7 +77,7 @@ export default function Chat({
 
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined,
+    index: React.Key | null | undefined
   ) => (
     <div
       key={index}
@@ -111,9 +111,10 @@ export default function Chat({
       >
         <CardHeader className="border-b-2 p-4">
           <div className="grid gap-1.5">
-            <CardTitle>Chat with AI Video Summariser</CardTitle>
+            <CardTitle>Video Insights Now Available!</CardTitle>
             <CardDescription>
-              Ask me anything related to the video titled
+              All the insights present here are based on the contents of the
+              video titled:
               <b className="font-bold text-red-500"> {videoTitle}</b>
             </CardDescription>
           </div>
@@ -158,7 +159,7 @@ export default function Chat({
                         "Welcome! Ask me anything related to the video titled " +
                         videoTitle,
                     },
-                    "welcome",
+                    "welcome"
                   )}
                   {messages
                     .filter((message) => message.role !== "system")

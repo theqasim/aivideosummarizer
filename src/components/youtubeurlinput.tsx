@@ -6,7 +6,7 @@ import LoadingModal from "./loadingmodal";
 import localFont from "next/font/local";
 
 const fontspring = localFont({
-  src: "../.././public/fonts/Fontspring-integralcf-demibold.otf",
+  src: "../.././public/fonts/Fontspring-integralcf-bold.otf",
 });
 
 interface YouTubeURLInputProps {
@@ -184,7 +184,7 @@ export default function YouTubeURLInput({
       )}
 
       <h1
-        className={`text-4xl md:text=5xl font-bold sm:text-4x1 text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
+        className={`text-4xl md:text=5xl sm:text-4x1 text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
       >
         AI YouTube Video Summariser Chatbot
       </h1>
