@@ -191,7 +191,8 @@ export default function YouTubeURLInput({
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
         Discover insights from YouTube videos in seconds. Simply enter the URL
         of a YouTube video to receive a detailed summary, the highlights, and
-        access to a chatbot that's trained specifically on the video's content.
+        access to a chatbot that&apos;s trained specifically on the video&apos;s
+        content.
       </p>
       <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
         <Input
