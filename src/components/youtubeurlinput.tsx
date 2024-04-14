@@ -114,7 +114,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analyzing Video: Your video has no subtitles available therefore it cannot be analysed"
+          "Error Analysing Video: Your video has no subtitles available therefore it cannot be analysed"
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -148,10 +148,14 @@ export default function YouTubeURLInput({
       });
 
       if (!summaryResponse.ok) {
-        setIsLoading(false);
         const errorData = await summaryResponse.json();
         console.error("Error fetching summary:", errorData);
-        alert(`Failed to summarise: ${errorData.error}`);
+        setLoadingVisibility("none");
+        setCloseVisibility("block");
+        setLoadingText(
+          "Error Analysing Video: We were unable to summarise your video, please try again later."
+        );
+        setLoadingTextColor("text-red-500");
         return;
       }
 
