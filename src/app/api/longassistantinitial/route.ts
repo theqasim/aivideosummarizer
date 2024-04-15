@@ -28,7 +28,6 @@ function splitTranscript(transcript: string, maxPartSize: number) {
 
 export async function POST(req: Request) {
   const { transcript } = await req.json();
-
   const transcriptParts = splitTranscript(transcript, 32000);
 
   let assistant_id = "asst_r6Ryw088h1xCRpw3hlXKwuQ1";
@@ -51,7 +50,7 @@ export async function POST(req: Request) {
         await openai.beta.threads.messages.create(thread.id, {
           role: "user",
           content:
-            "This is the last part of the transcript. Please provide a full breakdown of the entire video missing no details based on all the transcripts provided.",
+            "This is the last part of the transcript. Please provide a full breakdown of the entire video missing no details based on all the transcripts provided. Include every aspect and topic from each of the transcripts in your summary.",
         });
       }
     }
