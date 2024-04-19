@@ -124,7 +124,7 @@ export default function Chat({
             <TabsList className="flex gap-4 border-b-2">
               <TabsTrigger value="transcript">Transcript</TabsTrigger>
               <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="conversation">Conversation</TabsTrigger>
+              <TabsTrigger value="conversation">Chatbot</TabsTrigger>
             </TabsList>
             <div className="flex flex-col flex-1 overflow-hidden">
               <TabsContent
