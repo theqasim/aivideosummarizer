@@ -34,10 +34,8 @@ export default function Chat({
   const [chatbotAssistantID, setChatbotAssistantID] = useState("");
   useEffect(() => {
     if (LongVideoLengthStatus) {
-      console.log("Long video transcript detected");
       setChatbotAssistantID(process.env.NEXT_PUBLIC_LONGASSISTANT_ID || "");
     } else {
-      console.log("Standard video transcript detected");
       setChatbotAssistantID(process.env.NEXT_PUBLIC_REGULARASSISTANT_ID || "");
     }
   }, [LongVideoLengthStatus]);

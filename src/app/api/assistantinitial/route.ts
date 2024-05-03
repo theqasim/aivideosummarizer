@@ -39,8 +39,6 @@ export async function POST(req: Request) {
       );
       runStatus = updatedRun.status;
 
-      console.log("Current Summary Run Status:", runStatus);
-
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
@@ -82,7 +80,6 @@ export async function POST(req: Request) {
 
       highlightsRunStatus = highlightsUpdatedRun.status;
 
-      console.log("Current Highlight Run Status:", highlightsRunStatus);
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
@@ -100,7 +97,6 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error(error);
     return new Response(JSON.stringify({ error: error }), {
       status: 500,
       headers: {

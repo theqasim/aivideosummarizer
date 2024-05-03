@@ -20,7 +20,6 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
     try {
       return extractBulletPoints(highlights);
     } catch (error) {
-      console.error("Error extracting bullet points:, error");
       setIsError(true);
       return null;
     }

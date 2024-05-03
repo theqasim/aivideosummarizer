@@ -113,7 +113,6 @@ export default function YouTubeURLInput({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Error fetching summary:", errorData);
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
@@ -133,7 +132,6 @@ export default function YouTubeURLInput({
           "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
         );
         setLoadingTextColor("text-black");
-        console.log("Long Video Transcript Endpoint being used");
         endpoint = "/api/longassistantinitial";
       } else {
         setLoadingText(
@@ -152,7 +150,6 @@ export default function YouTubeURLInput({
 
       if (!summaryResponse.ok) {
         const errorData = await summaryResponse.json();
-        console.error("Error fetching summary:", errorData);
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
@@ -174,7 +171,6 @@ export default function YouTubeURLInput({
       setIsLoading(false);
       scrollToBottom();
     } catch (error) {
-      console.error("Error fetching summary:", error);
       alert("Failed to generate summary. Please try again.");
     }
   };

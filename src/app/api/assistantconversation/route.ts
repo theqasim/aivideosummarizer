@@ -9,10 +9,6 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   const { input, threadId, chatbotAssistantID } = await req.json();
 
-  console.log(
-    "chatbotassistantid being sent from chatbot component:" +
-      chatbotAssistantID,
-  );
   let assistant_id = chatbotAssistantID;
 
   try {
@@ -59,7 +55,6 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    console.error(error);
     return new Response(JSON.stringify({ error: error }), {
       status: 500,
       headers: {

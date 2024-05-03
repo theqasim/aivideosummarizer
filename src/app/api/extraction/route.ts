@@ -33,7 +33,6 @@ function formatTranscript(transcription: any[]): string | void {
 
   if (totalLength > 32768) {
     longTranscriptLengthStatus = true;
-    console.log("Long Video Transcript Detected: " + totalLength + " / 32768");
   }
 
   return transcription
@@ -43,7 +42,6 @@ function formatTranscript(transcription: any[]): string | void {
           ? entry.subtitle.replace(/&#39;/g, "'")
           : "Error: Non-string subtitle";
       } catch (error) {
-        console.error("Error processing entry:", entry, error);
         return "Error: Exception caught";
       }
     })
@@ -85,7 +83,6 @@ export async function POST(req: NextRequest) {
 
     const data = await fetchTranscript(videoID, apiKey);
     const title = data[0].title;
-    console.log(title);
     const formattedTranscript = formatTranscript(data[0].transcription);
 
     return new NextResponse(
@@ -100,7 +97,6 @@ export async function POST(req: NextRequest) {
       },
     );
   } catch (error) {
-    console.error(error);
     return new NextResponse(
       JSON.stringify({ error: "Failed to process request" }),
       { status: 500 },
