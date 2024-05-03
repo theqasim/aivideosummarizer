@@ -13,6 +13,7 @@ export default function VideoChatPage() {
   const [videoId, setVideoId] = useState("");
   const [threadId, setThreadId] = useState("");
   const [highlights, setHighlights] = useState("");
+  const [LongVideoLengthStatus, setLongVideoLengthStatus] = useState(false);
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4">
@@ -26,6 +27,7 @@ export default function VideoChatPage() {
           setVideoId={setVideoId}
           setThreadId={setThreadId}
           setHighlights={setHighlights}
+          setLongVideoLengthStatus={setLongVideoLengthStatus}
         />
 
         {videoTranscript && (
@@ -36,6 +38,7 @@ export default function VideoChatPage() {
                 videoTitle={videoTitle}
                 videoSummary={videoSummary}
                 threadId={threadId}
+                LongVideoLengthStatus={LongVideoLengthStatus}
               />
             </div>
             <div className="w-full md:w-1/2 flex-none space-y-4">

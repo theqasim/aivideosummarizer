@@ -18,6 +18,7 @@ interface YouTubeURLInputProps {
   setVideoId: React.Dispatch<React.SetStateAction<string>>;
   setThreadId: React.Dispatch<React.SetStateAction<string>>;
   setHighlights: React.Dispatch<React.SetStateAction<string>>;
+  setLongVideoLengthStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function YouTubeURLInput({
@@ -29,11 +30,12 @@ export default function YouTubeURLInput({
   setVideoId,
   setThreadId,
   setHighlights,
+  setLongVideoLengthStatus,
 }: YouTubeURLInputProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait..."
+    "Retrieving video, please wait...",
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -54,6 +56,7 @@ export default function YouTubeURLInput({
     setVideoId("");
     setThreadId("");
     setHighlights("");
+    setLongVideoLengthStatus(false);
     setIsLoading(false);
     setLoadingText("Retrieving video, please wait...");
     setLoadingTextColor("text-black");
@@ -114,7 +117,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analysing Video: Your video has no subtitles available therefore it cannot be analysed"
+          "Error Analysing Video: Your video has no subtitles available therefore it cannot be analysed",
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -127,14 +130,14 @@ export default function YouTubeURLInput({
 
       if (longTranscriptLengthStatus == true) {
         setLoadingText(
-          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!"
+          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
         );
         setLoadingTextColor("text-black");
         console.log("Long Video Transcript Endpoint being used");
         endpoint = "/api/longassistantinitial";
       } else {
         setLoadingText(
-          "Just a moment while we tailor your video summary and prepare our chatbot for interaction."
+          "Just a moment while we tailor your video summary and prepare our chatbot for interaction.",
         );
         setLoadingTextColor("text-black");
       }
@@ -153,7 +156,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analysing Video: We were unable to summarise your video, please try again later."
+          "Error Analysing Video: We were unable to summarise your video, please try again later.",
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -165,6 +168,7 @@ export default function YouTubeURLInput({
       setThreadId(threadId);
       setVideoTranscript(formattedTranscript);
       setVideoSummary(summary);
+      setLongVideoLengthStatus(longTranscriptLengthStatus);
       setGenerateSummaryButtonText("Analyse another video");
       setVideoAnalysed(true);
       setIsLoading(false);

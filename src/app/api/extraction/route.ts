@@ -12,7 +12,7 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
         "X-RapidAPI-Key": apiKey,
         "X-RapidAPI-Host": "youtube-transcriptor.p.rapidapi.com",
       },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -72,14 +72,14 @@ export async function POST(req: NextRequest) {
     if (!videoID) {
       return new NextResponse(
         JSON.stringify({ error: "Invalid YouTube URL" }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const apiKey = process.env.RAPIDAPI_KEY;
     if (typeof apiKey !== "string") {
       throw new Error(
-        "RapidAPI key is undefined. Please check your environment variables."
+        "RapidAPI key is undefined. Please check your environment variables.",
       );
     }
 
@@ -97,13 +97,13 @@ export async function POST(req: NextRequest) {
       }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error(error);
     return new NextResponse(
       JSON.stringify({ error: "Failed to process request" }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

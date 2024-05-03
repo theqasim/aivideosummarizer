@@ -7,9 +7,13 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { input, threadId } = await req.json();
+  const { input, threadId, chatbotAssistantID } = await req.json();
 
-  let assistant_id = "asst_r6Ryw088h1xCRpw3hlXKwuQ1";
+  console.log(
+    "chatbotassistantid being sent from chatbot component:" +
+      chatbotAssistantID,
+  );
+  let assistant_id = chatbotAssistantID;
 
   try {
     let runStatus = "pending";
@@ -29,12 +33,12 @@ export async function POST(req: Request) {
 
     const runRetrieve = await openai.beta.threads.runs.retrieve(
       threadId,
-      run.id
+      run.id,
     );
     while (runStatus !== "completed") {
       const updatedRun = await openai.beta.threads.runs.retrieve(
         threadId,
-        run.id
+        run.id,
       );
       runStatus = updatedRun.status;
 

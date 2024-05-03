@@ -16,6 +16,7 @@ interface ChatProps {
   videoTitle: string;
   videoSummary: string;
   threadId: string;
+  LongVideoLengthStatus: boolean;
 }
 
 interface Message {
@@ -28,7 +29,18 @@ export default function Chat({
   videoTitle,
   videoSummary,
   threadId,
+  LongVideoLengthStatus,
 }: ChatProps) {
+  const [chatbotAssistantID, setChatbotAssistantID] = useState("");
+  useEffect(() => {
+    if (LongVideoLengthStatus) {
+      console.log("Long video transcript detected");
+      setChatbotAssistantID(process.env.NEXT_PUBLIC_LONGASSISTANT_ID || "");
+    } else {
+      console.log("Standard video transcript detected");
+      setChatbotAssistantID(process.env.NEXT_PUBLIC_REGULARASSISTANT_ID || "");
+    }
+  }, [LongVideoLengthStatus]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -53,7 +65,11 @@ export default function Chat({
       const response = await fetch("/api/assistantconversation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: input, threadId: threadId }),
+        body: JSON.stringify({
+          input: input,
+          threadId: threadId,
+          chatbotAssistantID: chatbotAssistantID,
+        }),
       });
 
       if (!response.ok) throw new Error("Network response was not ok");
@@ -79,7 +95,7 @@ export default function Chat({
 
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined
+    index: React.Key | null | undefined,
   ) => (
     <div
       key={index}
@@ -161,7 +177,7 @@ export default function Chat({
                         "Welcome! Ask me anything related to the video titled " +
                         videoTitle,
                     },
-                    "welcome"
+                    "welcome",
                   )}
                   {messages
                     .filter((message) => message.role !== "system")
