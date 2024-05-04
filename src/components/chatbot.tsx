@@ -34,9 +34,9 @@ export default function Chat({
   const [chatbotAssistantID, setChatbotAssistantID] = useState("");
   useEffect(() => {
     if (LongVideoLengthStatus) {
-      setChatbotAssistantID(process.env.NEXT_PUBLIC_LONGASSISTANT_ID || "");
+      setChatbotAssistantID(process.env.LONGASSISTANT_ID || "");
     } else {
-      setChatbotAssistantID(process.env.NEXT_PUBLIC_REGULARASSISTANT_ID || "");
+      setChatbotAssistantID(process.env.REGULARASSISTANT_ID || "");
     }
   }, [LongVideoLengthStatus]);
   const [messages, setMessages] = useState<Message[]>([]);
