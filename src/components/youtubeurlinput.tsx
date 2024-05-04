@@ -66,7 +66,6 @@ export default function YouTubeURLInput({
     setGenerateSummaryButtonText("Analyse Video");
   };
 
-  // Include this button in your component's return statement
   <button onClick={resetAllStates} className="your-button-classes">
     Reset Page
   </button>;
