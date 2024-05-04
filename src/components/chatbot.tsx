@@ -78,7 +78,7 @@ export default function Chat({
         { role: "assistant", content: assistantResponse },
       ]);
     } catch (error) {
-      console.error("Failed to fetch the AI's response:", error);
+      return error;
     }
     setIsAITyping(false);
     setIsButtonDisabled(false);
@@ -93,7 +93,7 @@ export default function Chat({
 
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined,
+    index: React.Key | null | undefined
   ) => (
     <div
       key={index}
@@ -175,7 +175,7 @@ export default function Chat({
                         "Welcome! Ask me anything related to the video titled " +
                         videoTitle,
                     },
-                    "welcome",
+                    "welcome"
                   )}
                   {messages
                     .filter((message) => message.role !== "system")
