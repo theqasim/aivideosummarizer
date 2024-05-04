@@ -18,7 +18,7 @@ interface YouTubeURLInputProps {
   setVideoId: React.Dispatch<React.SetStateAction<string>>;
   setThreadId: React.Dispatch<React.SetStateAction<string>>;
   setHighlights: React.Dispatch<React.SetStateAction<string>>;
-  setLongVideoLengthStatus: React.Dispatch<React.SetStateAction<boolean>>;
+  setChatbotAssistantID: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function YouTubeURLInput({
@@ -30,7 +30,7 @@ export default function YouTubeURLInput({
   setVideoId,
   setThreadId,
   setHighlights,
-  setLongVideoLengthStatus,
+  setChatbotAssistantID,
 }: YouTubeURLInputProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,8 +55,8 @@ export default function YouTubeURLInput({
     setVideoTitle("");
     setVideoId("");
     setThreadId("");
+    setChatbotAssistantID("");
     setHighlights("");
-    setLongVideoLengthStatus(false);
     setIsLoading(false);
     setLoadingText("Retrieving video, please wait...");
     setLoadingTextColor("text-black");
@@ -122,8 +122,13 @@ export default function YouTubeURLInput({
         return;
       }
 
-      let { formattedTranscript, title, videoID, longTranscriptLengthStatus } =
-        await response.json();
+      let {
+        formattedTranscript,
+        title,
+        videoID,
+        longTranscriptLengthStatus,
+        chatbotAssistantID,
+      } = await response.json();
 
       setVideoId(videoID);
 
@@ -165,7 +170,7 @@ export default function YouTubeURLInput({
       setThreadId(threadId);
       setVideoTranscript(formattedTranscript);
       setVideoSummary(summary);
-      setLongVideoLengthStatus(longTranscriptLengthStatus);
+      setChatbotAssistantID(chatbotAssistantID);
       setGenerateSummaryButtonText("Analyse another video");
       setVideoAnalysed(true);
       setIsLoading(false);

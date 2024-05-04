@@ -22,6 +22,7 @@ async function fetchTranscript(videoID: string, apiKey: string): Promise<any> {
   return response.json();
 }
 let longTranscriptLengthStatus = false;
+let chatbotAssistantID;
 
 function formatTranscript(transcription: any[]): string | void {
   const totalLength = transcription.reduce((acc, entry) => {
@@ -84,13 +85,18 @@ export async function POST(req: NextRequest) {
     const data = await fetchTranscript(videoID, apiKey);
     const title = data[0].title;
     const formattedTranscript = formatTranscript(data[0].transcription);
-
+    if (longTranscriptLengthStatus) {
+      chatbotAssistantID = process.env.LONGASSISTANT_ID || "";
+    } else {
+      chatbotAssistantID = process.env.REGULARASSISTANT_ID || "";
+    }
     return new NextResponse(
       JSON.stringify({
         title,
         formattedTranscript,
         videoID,
         longTranscriptLengthStatus,
+        chatbotAssistantID,
       }),
       {
         status: 200,
