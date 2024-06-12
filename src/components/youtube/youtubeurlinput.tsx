@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import LoadingModal from "./loadingmodal";
+import LoadingModal from "../loadingmodal";
 import localFont from "next/font/local";
+import { pdfToText } from "pdf-ts";
 
 const fontspring = localFont({
-  src: "../.././public/fonts/Fontspring-integralcf-bold.otf",
+  src: "../../.././public/fonts/Fontspring-integralcf-bold.otf",
 });
 
 interface YouTubeURLInputProps {
@@ -19,6 +20,9 @@ interface YouTubeURLInputProps {
   setThreadId: React.Dispatch<React.SetStateAction<string>>;
   setHighlights: React.Dispatch<React.SetStateAction<string>>;
   setChatbotAssistantID: React.Dispatch<React.SetStateAction<string>>;
+  pdfFile: File | null;
+  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setPdfFileName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function YouTubeURLInput({
@@ -31,6 +35,9 @@ export default function YouTubeURLInput({
   setThreadId,
   setHighlights,
   setChatbotAssistantID,
+  pdfFile,
+  setPdfFile,
+  setPdfFileName,
 }: YouTubeURLInputProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -179,6 +186,78 @@ export default function YouTubeURLInput({
     }
   };
 
+  const cleanText = (text: string) => {
+    return text
+      .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+      .replace(/-\s+/g, "") // Correct hyphenated words
+      .replace(/\.\s+/g, ".\n") // New line after sentences for better readability
+      .replace(/\n\s*\n/g, "\n"); // Remove excessive new lines
+  };
+
+  const formatHeadings = (text: string) => {
+    // Example pattern for headings: Assume they are all caps and followed by a newline
+    return text.replace(/(^[A-Z][A-Z\s]+)$/gm, "\n\n### $1\n");
+  };
+
+  const formatLists = (text: string) => {
+    // Example pattern for bullet points or numbered lists
+    return text.replace(/^(\d+\.)\s+/gm, "\n$1 ");
+  };
+
+  // const handlePDFUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files ? e.target.files[0] : null;
+  //   if (file && file.type === "application/pdf") {
+  //     setPdfFile(file);
+  //     setPdfFileName(file.name);
+
+  //     const reader = new FileReader();
+  //     reader.onload = async (event) => {
+  //       if (event.target?.result instanceof ArrayBuffer) {
+  //         const arrayBuffer = event.target.result;
+  //         const uint8Array = new Uint8Array(arrayBuffer);
+  //         const text = await pdfToText(uint8Array);
+  //         console.log("Extracted Text:", text);
+  //       }
+  //     };
+  //     reader.readAsArrayBuffer(file);
+  //   } else {
+  //     alert("Please upload a valid PDF file.");
+  //   }
+  // };
+
+  const handlePDFUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoadingVisibility("block");
+    setCloseVisibility("none");
+    setLoadingText("Processing PDF...");
+    setLoadingTextColor("text-black");
+    setIsLoading(true);
+
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file && file.type === "application/pdf") {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        if (event.target?.result instanceof ArrayBuffer) {
+          setLoadingText(
+            "Just a moment while we tailor your PDF summary and prepare our chatbot for interaction.",
+          );
+          setLoadingTextColor("text-black");
+          const arrayBuffer = event.target.result;
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const text = await pdfToText(uint8Array);
+          console.log("Extracted Text:", text);
+          const cleanedText = cleanText(text);
+          const formattedText = formatHeadings(formatLists(cleanedText));
+          console.log("Formatted Text:", formattedText);
+          setPdfFileName(file.name);
+          setIsLoading(false);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      alert("Please upload a valid PDF file.");
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-8 dark:bg-dot-white/[0.2] bg-dot-black/[0.2]">
       {isLoading && (
@@ -212,13 +291,31 @@ export default function YouTubeURLInput({
         />
         <button
           onClick={videoAnalysed ? resetAllStates : handleSubmit}
-          className={`relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover: focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50`}
+          className={`relative inline-flex h-12 mr-2 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover: focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50`}
         >
           <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
           <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
             {generateSummaryButtonText}
           </span>
         </button>
+        <label className="relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover:focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 cursor-pointer">
+          <input
+            type="file"
+            // accept=".pdf"
+            accept="application/pdf"
+            onChange={handlePDFUpload}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+          <span className="inline-flex h-full w-full items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+            {/* <img
+                src="/icons/pdf-icon.svg"
+                alt="PDF"
+                className="mr-2 h-6 w-6"
+              /> */}
+            Upload PDF
+          </span>
+        </label>
       </div>
     </div>
   );
