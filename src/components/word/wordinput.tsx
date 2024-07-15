@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import LoadingModal from "../loadingmodal";
 import localFont from "next/font/local";
 import { pdfToText } from "pdf-ts";
+import { getTextExtractor } from "office-text-extractor";
 import { format } from "path";
-import { text } from "stream/consumers";
 
 const fontspring = localFont({
   src: "../../.././public/fonts/Fontspring-integralcf-bold.otf",
@@ -17,20 +17,20 @@ interface PdfInputProps {
   setThreadId: React.Dispatch<React.SetStateAction<string>>;
   setHighlights: React.Dispatch<React.SetStateAction<string>>;
   setChatbotAssistantID: React.Dispatch<React.SetStateAction<string>>;
-  pdfFile: File | null;
-  setPdfFile: React.Dispatch<React.SetStateAction<File | null>>;
-  setPdfFileName: React.Dispatch<React.SetStateAction<string>>;
+  wordFile: File | null;
+  setWordFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setWordFileName: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function TxtInput({
+export default function WordInput({
   setVideoSummary,
   setVideoTitle,
   setThreadId,
   setHighlights,
   setChatbotAssistantID,
-  pdfFile,
-  setPdfFile,
-  setPdfFileName,
+  wordFile,
+  setWordFile,
+  setWordFileName,
 }: PdfInputProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,37 +77,60 @@ export default function TxtInput({
     setIsLoading(false);
   };
 
-  const handleTXTUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWordUpload = async (event: any) => {
     setLoadingVisibility("block");
     setCloseVisibility("none");
-    setLoadingText("Processing TXT file...");
+    setLoadingText("Processing Word Document...");
     setLoadingTextColor("text-black");
     setIsLoading(true);
 
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file && file.type === "text/plain") {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const textContent = event.target?.result as string;
+    const file = event.target.files[0];
+    if (
+      file &&
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      try {
+        const formData = new FormData();
+        formData.append("files", event.target.files[0]);
+        console.log("Form Data:", formData);
+        console.log("File:", file);
 
-        console.log("Extracted Text:", textContent);
         setLoadingText(
-          "Just a moment while we tailor your TXT file summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your word document summary and prepare our chatbot for interaction.",
         );
 
         setLoadingTextColor("text-black");
-        setPdfFile(file);
-        setPdfFileName(file.name);
+        setWordFile(file);
+        setWordFileName(file.name);
 
         try {
-          let endpoint = "/api/assistantinitialtxt";
+          const fileTextExtractionResponse = await fetch("/api/extracttext", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!fileTextExtractionResponse.ok) {
+            setLoadingVisibility("none");
+            setCloseVisibility("block");
+            setLoadingText(
+              "Error Extracting Text: We were unable to extract the text from your document, please try again later.",
+            );
+            setLoadingTextColor("text-red-500");
+            return;
+          }
+
+          const { extractedText } = await fileTextExtractionResponse.json();
+          // console.log("Extracted Document Text:", wordText);
+
+          let endpoint = "/api/assistantinitialword";
 
           const summaryResponse = await fetch(endpoint, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ userText: textContent }),
+            body: JSON.stringify({ wordText: extractedText }),
           });
 
           if (!summaryResponse.ok) {
@@ -115,7 +138,7 @@ export default function TxtInput({
             setLoadingVisibility("none");
             setCloseVisibility("block");
             setLoadingText(
-              "Error Analysing TXT file: We were unable to summarise your TXT file, please try again later.",
+              "Error Analysing Word Document: We were unable to summarise your word document, please try again later.",
             );
             setLoadingTextColor("text-red-500");
             return;
@@ -138,10 +161,15 @@ export default function TxtInput({
         }
 
         setIsLoading(false);
-      };
-      reader.readAsText(file); // Ensure you're using readAsText to read the file content as text
+      } catch (error) {
+        console.error("Extraction Error:", error);
+        setLoadingVisibility("none");
+        setCloseVisibility("block");
+        setLoadingText(`Error: ${"Failed to process the file"}`);
+        setLoadingTextColor("text-red-500");
+      }
     } else {
-      alert("Please upload a valid TXT file.");
+      alert("Please upload a valid word document.");
     }
   };
 
@@ -160,21 +188,22 @@ export default function TxtInput({
       <h1
         className={`text-4xl md:text=5xl sm:text-4x1 text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
       >
-        AI Txt Summariser Chatbot
+        AI Word Document Summariser Chatbot
       </h1>
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
-        Discover insights from TXT files in seconds. Simply upload a TXT file to
-        receive a detailed summary, the highlights, and access to a chatbot
-        that&apos;s trained specifically on the TXT files content.
+        Discover insights from word documents in seconds. Simply upload a word
+        document to receive a detailed summary, the highlights, and access to a
+        chatbot that&apos;s trained specifically on the word documents content.
       </p>
       <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
         <label className="relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover:focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 cursor-pointer">
           <input
             type="file"
-            accept=".txt"
-            onChange={handleTXTUpload}
+            accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onChange={handleWordUpload}
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
+
           <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
           <span className="inline-flex h-full w-full items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
             <svg
@@ -191,7 +220,7 @@ export default function TxtInput({
                 d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
               />
             </svg>
-            Upload TXT File
+            Upload Word Document
           </span>
         </label>
       </div>

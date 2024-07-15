@@ -11,6 +11,7 @@ export async function POST(req: Request) {
     const { input, threadId, chatbotAssistantID } = await req.json();
 
     let assistant_id = chatbotAssistantID;
+    console.log("assistant_id", assistant_id);
     let assistantResponse = "";
     let assistant, run, runStatus, runRetrieve, messagesResponse;
 

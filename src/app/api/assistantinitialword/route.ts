@@ -7,27 +7,27 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { userText } = await req.json();
+  const { wordText } = await req.json();
 
-  let assistant_id = process.env.TXTASSISTANT_ID || "";
+  console.log("Word Text:", wordText);
+
+  let assistant_id = process.env.WORDASSISTANT_ID || "";
 
   try {
     let runStatus = "pending";
     let highlightsRunStatus = "pending";
-
-    console.log("starting");
 
     const assistant = await openai.beta.assistants.retrieve(assistant_id);
 
     const thread = await openai.beta.threads.create();
     await openai.beta.threads.messages.create(thread.id, {
       role: "user",
-      content: `Hi, here is the contents of the TXT file, understand it and give me a detailed summary: "${userText}".`,
+      content: `Hi, here is the contents of the word document, understand it and give me a detailed summary: "${wordText}".`,
     });
 
     const run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id,
-      instructions: "Do not assume the TXT file is made by the user",
+      instructions: "Do not assume the word document is made by the user",
     });
 
     const runRetrieve = await openai.beta.threads.runs.retrieve(
@@ -35,23 +35,13 @@ export async function POST(req: Request) {
       run.id,
     );
     while (runStatus !== "completed") {
-      console.log("waiting for completion", runStatus);
+      const updatedRun = await openai.beta.threads.runs.retrieve(
+        thread.id,
+        run.id,
+      );
+      runStatus = updatedRun.status;
 
-      try {
-        const updatedRun = await openai.beta.threads.runs.retrieve(
-          thread.id,
-          run.id,
-        );
-        runStatus = updatedRun.status;
-
-        if (runStatus === "failed") {
-          console.error("Run failed:", updatedRun);
-          break; // Exit the loop if the status is "failed"
-        }
-      } catch (error) {
-        console.error("Error retrieving run status:", error);
-        break; // Exit the loop on error
-      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
     const messages = await openai.beta.threads.messages.list(thread.id);
@@ -63,8 +53,6 @@ export async function POST(req: Request) {
     const summary = firstElement.text.value;
     const threadId = thread.id;
 
-    console.log("Summary: ", summary);
-
     // Getting highlights
 
     const highlightsMessage = await openai.beta.threads.messages.create(
@@ -72,13 +60,13 @@ export async function POST(req: Request) {
       {
         role: "user",
         content:
-          "Generate a bullet point list of the highlights for the entire TXT file",
+          "Generate a bullet point list of the highlights for the entire word document",
       },
     );
 
     const highlightsRun = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id,
-      instructions: "Do not assume the TXT file is made by the user",
+      instructions: "Do not assume the word document is made by the user",
     });
 
     const runRetrieveHighlights = await openai.beta.threads.runs.retrieve(
@@ -100,8 +88,6 @@ export async function POST(req: Request) {
     const messagesResponseHighlights = await openai.beta.threads.messages.list(
       thread.id,
     );
-
-    console.log("Thread ID: ", threadId);
 
     const firstElementHighlights = messagesResponseHighlights.data[0]
       .content[0] as TextContentBlock;

@@ -11,8 +11,8 @@ const fontspring = localFont({
 });
 
 interface YouTubeURLInputProps {
-  userText: string;
-  setUserText: React.Dispatch<React.SetStateAction<string>>;
+  userURL: string;
+  setUserURL: React.Dispatch<React.SetStateAction<string>>;
   setVideoSummary: React.Dispatch<React.SetStateAction<string>>;
   setVideoTranscript: React.Dispatch<React.SetStateAction<string>>;
   setVideoTitle: React.Dispatch<React.SetStateAction<string>>;
@@ -25,9 +25,9 @@ interface YouTubeURLInputProps {
   setPdfFileName: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function TextInput({
-  userText,
-  setUserText,
+export default function WebsiteInput({
+  userURL,
+  setUserURL,
   setVideoSummary,
   setVideoTranscript,
   setVideoTitle,
@@ -48,15 +48,16 @@ export default function TextInput({
   const [videoAnalysed, setVideoAnalysed] = useState(false);
   const [loadingVisibility, setLoadingVisibility] = useState("block");
   const [closeVisibility, setCloseVisibility] = useState("none");
-  const [generateSummaryButtonText, setGenerateSummaryButtonText] =
-    useState("Analyse Text");
+  const [generateSummaryButtonText, setGenerateSummaryButtonText] = useState(
+    "Analyse Website Content",
+  );
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
-    setUserText(e.target.value);
+    setUserURL(e.target.value);
   };
   const resetAllStates = () => {
-    setUserText("");
+    setUserURL("");
     setVideoSummary("");
     setVideoTranscript("");
     setVideoTitle("");
@@ -70,7 +71,7 @@ export default function TextInput({
     setLoadingVisibility("block");
     setCloseVisibility("none");
     setVideoAnalysed(false);
-    setGenerateSummaryButtonText("Analyse Text");
+    setGenerateSummaryButtonText("Analyse Website Content");
   };
 
   <button onClick={resetAllStates} className="your-button-classes">
@@ -92,29 +93,62 @@ export default function TextInput({
     setLoadingVisibility("block");
     setCloseVisibility("none");
     setLoadingTextColor("text-black");
-    setLoadingText("Analysing text, please wait...");
+    setLoadingText("Analysing website, please wait...");
 
     setIsLoading(true);
 
     try {
-      if (parseInt(userText) === 100000) {
+      setLoadingText(
+        "Just a moment while we tailor your text summary and prepare our chatbot for interaction.",
+      );
+      setLoadingTextColor("text-black");
+
+      // const response = await fetch(userURL);
+      // const html = await response.text();
+      // const parser = new DOMParser();
+      // const doc = parser.parseFromString(html, "text/html");
+
+      // // Example: Extract text from all paragraph tags
+      // const paragraphs = doc.querySelectorAll("p");
+      // const allText = Array.from(paragraphs)
+      //   .map((p) => p?.textContent?.trim())
+      //   .filter((t) => t)
+      //   .join("\n");
+
+      // console.log("user webistes text:", allText);
+
+      console.log("userURL", userURL);
+      const websiteTextExtractionResponse = await fetch(
+        "/api/extractwebsitecontent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userUrl: userURL }),
+        },
+      );
+
+      if (!websiteTextExtractionResponse.ok) {
+        setLoadingVisibility("none");
+        setCloseVisibility("block");
         setLoadingText(
-          "We've detected a large amount of text, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
+          "Error Extracting Website Content: We were unable to extract content from the website, please try again later.",
         );
-        setLoadingTextColor("text-black");
-      } else {
-        setLoadingText(
-          "Just a moment while we tailor your text summary and prepare our chatbot for interaction.",
-        );
-        setLoadingTextColor("text-black");
+        setLoadingTextColor("text-red-500");
+        return;
       }
 
-      const summaryResponse = await fetch("/api/assistantinitialtext", {
+      const { extractedText } = await websiteTextExtractionResponse.json();
+
+      console.log("user websites text:", extractedText);
+
+      const summaryResponse = await fetch("/api/assistantinitialwebsite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: userText }),
+        body: JSON.stringify({ text: extractedText }),
       });
 
       if (!summaryResponse.ok) {
@@ -134,7 +168,7 @@ export default function TextInput({
       setThreadId(threadId);
       setVideoSummary(summary);
       setChatbotAssistantID(assistant_id);
-      setGenerateSummaryButtonText("Analyse more text");
+      setGenerateSummaryButtonText("Analyse another website");
       setVideoAnalysed(true);
       setIsLoading(false);
       scrollToBottom();
@@ -158,19 +192,19 @@ export default function TextInput({
       <h1
         className={`text-4xl md:text=5xl sm:text-4x1 text-center mb-6 animate-fade-up animate-once animate-duration-[750ms] ${fontspring.className} `}
       >
-        AI Text Video Summariser Chatbot
+        AI Website Summariser Chatbot
       </h1>
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
-        Discover insights from text in seconds. Simply enter text to receive a
-        detailed summary, the highlights, and access to a chatbot that&apos;s
-        trained specifically on the text you&apos;ve entered.
+        Discover insights from websites in seconds. Simply enter a URL to
+        receive a detailed summary, the highlights, and access to a chatbot
+        that&apos;s trained specifically on the URL you&apos;ve entered.
       </p>
-      <div className="flex flex-col space-y-4 justify-center p-10 items-center border-2 border-dashed border-red-600 rounded-lg p-4">
-        <textarea
-          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Enter your text..."
-          rows={5}
-          value={userText}
+      <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
+        <Input
+          className="flex-1 mr-4"
+          placeholder="https://www.ibm.com/topics/artificial-intelligence"
+          type="text"
+          value={userURL}
           onChange={handleInputChange}
         />
         <button

@@ -23,7 +23,7 @@ interface Message {
   content: string;
 }
 
-export default function TEXTChat({
+export default function WebsiteChat({
   videoTitle,
   videoSummary,
   threadId,
@@ -47,6 +47,7 @@ export default function TEXTChat({
     const userMessage: Message = { role: "user", content: input };
     setInput("");
     setMessages((currentMessages) => [...currentMessages, userMessage]);
+    console.log("input", input);
     setIsAITyping(true);
 
     console.log(threadId, chatbotAssistantID);

@@ -23,7 +23,7 @@ interface Message {
   content: string;
 }
 
-export default function TEXTChat({
+export default function PowerpointChat({
   videoTitle,
   videoSummary,
   threadId,
@@ -41,12 +41,14 @@ export default function TEXTChat({
 
     setIsButtonDisabled(value.trim() === "");
   };
+
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsButtonDisabled(true);
     const userMessage: Message = { role: "user", content: input };
     setInput("");
     setMessages((currentMessages) => [...currentMessages, userMessage]);
+    console.log("input", input);
     setIsAITyping(true);
 
     console.log(threadId, chatbotAssistantID);
@@ -118,10 +120,10 @@ export default function TEXTChat({
       >
         <CardHeader className="border-b-2 p-4">
           <div className="grid gap-1.5">
-            <CardTitle>Text Insights Now Available!</CardTitle>
+            <CardTitle>Video Insights Now Available!</CardTitle>
             <CardDescription>
-              All the insights present here are based on the text you&apos;ve
-              entered
+              All the insights present here are based on the contents of the
+              video titled:
               <b className="font-bold text-red-500"> {videoTitle}</b>
             </CardDescription>
           </div>
@@ -162,7 +164,8 @@ export default function TEXTChat({
                     {
                       role: "system",
                       content:
-                        "Welcome! Ask me anything related to the text you've entered",
+                        "Welcome! Ask me anything related to the video titled " +
+                        videoTitle,
                     },
                     "welcome",
                   )}

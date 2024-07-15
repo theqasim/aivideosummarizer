@@ -1,12 +1,12 @@
 "use client";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Chat from "./youtube/chatbot";
-import YouTubeURLInput from "./youtube/youtubeurlinput";
 import Highlights from "./youtube/videohighlights";
-import YouTubeEmbed from "./youtube/youtubevideoembed";
+import WebsiteInput from "./website/websiteinput";
+import WebsiteChat from "./website/websitechatbot";
 
-export default function VideoChatPage() {
-  const [youtubeURL, setYoutubeURL] = useState("");
+export default function WebsiteChatbotPage() {
+  const [userText, setUserText] = useState("");
+  const [userURL, setUserURL] = useState(""); // This is the URL from the input
   const [videoSummary, setVideoSummary] = useState("");
   const [videoTranscript, setVideoTranscript] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
@@ -20,10 +20,10 @@ export default function VideoChatPage() {
   return (
     <div className="flex flex-col items-center min-h-screen p-4">
       <div className="w-full max-w-6xl mx-auto space-y-4">
-        <YouTubeURLInput
-          youtubeURL={youtubeURL}
+        <WebsiteInput
+          userURL={userURL} // You need to ensure this is defined and passed
           pdfFile={pdfFile}
-          setYoutubeURL={setYoutubeURL}
+          setUserURL={setUserURL}
           setVideoSummary={setVideoSummary}
           setVideoTranscript={setVideoTranscript}
           setVideoTitle={setVideoTitle}
@@ -34,34 +34,24 @@ export default function VideoChatPage() {
           setPdfFile={setPdfFile as Dispatch<SetStateAction<File | null>>} // Update the type of setPdfFile
           setPdfFileName={setPdfFileName} // Make sure to pass this
         />
-
-        {videoTranscript && (
+        {threadId && (
           <div className="flex flex-col md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-4 w-full">
             <div className="flex-1">
-              <Chat
-                videoTranscript={videoTranscript}
-                videoTitle={videoTitle}
+              <WebsiteChat
+                videoTitle={"the website content"}
                 videoSummary={videoSummary}
                 threadId={threadId}
                 chatbotAssistantID={chatbotAssistantID}
               />
             </div>
             <div className="w-full md:w-1/2 flex-none space-y-4">
-              <div className="aspect-w-16 aspect-h-9">
-                <YouTubeEmbed videoId={videoId} />
-              </div>
+              <div className="aspect-w-16 aspect-h-9"></div>
 
-              <Highlights title={videoTitle} highlights={highlights} />
+              <Highlights
+                title={"the website content"}
+                highlights={highlights}
+              />
             </div>
-          </div>
-        )}
-
-        {/* Optionally add a component or placeholder here to handle the PDF data */}
-        {pdfFileName && (
-          <div className="text-center mt-4">
-            <p className="text-lg">
-              PDF &quote;{pdfFileName}&quote; has been uploaded successfully!
-            </p>
           </div>
         )}
       </div>
