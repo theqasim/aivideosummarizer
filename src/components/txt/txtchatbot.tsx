@@ -86,7 +86,7 @@ export default function TXTChat({
 
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined,
+    index: React.Key | null | undefined
   ) => (
     <div
       key={index}
@@ -167,7 +167,7 @@ export default function TXTChat({
                         "Welcome! Ask me anything related to the video titled " +
                         videoTitle,
                     },
-                    "welcome",
+                    "welcome"
                   )}
                   {messages
                     .filter((message) => message.role !== "system")

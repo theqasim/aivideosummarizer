@@ -52,8 +52,8 @@ const Highlights: React.FC<HighlightsProps> = ({ title, highlights }) => {
                   | Promise<React.AwaitedReactNode>
                   | null
                   | undefined,
-                index: React.Key | null | undefined,
-              ) => <p key={index}>{point}</p>,
+                index: React.Key | null | undefined
+              ) => <p key={index}>{point}</p>
             )
           )}
         </CardContent>

@@ -84,7 +84,7 @@ export default function TEXTChat({
 
   const renderMessage = (
     message: { role: any; content: any },
-    index: React.Key | null | undefined,
+    index: React.Key | null | undefined
   ) => (
     <div
       key={index}
@@ -164,7 +164,7 @@ export default function TEXTChat({
                       content:
                         "Welcome! Ask me anything related to the text you've entered",
                     },
-                    "welcome",
+                    "welcome"
                   )}
                   {messages
                     .filter((message) => message.role !== "system")

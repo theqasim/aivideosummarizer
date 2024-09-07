@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import LoadingModal from "../loadingmodal";
+import Tesseract from "tesseract.js";
+
 import localFont from "next/font/local";
 
 const fontspring = localFont({
@@ -32,7 +34,7 @@ export default function ImageInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -74,7 +76,7 @@ export default function ImageInput({
     setIsLoading(false);
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoadingVisibility("block");
     setCloseVisibility("none");
     setLoadingText("Processing Image...");
@@ -88,73 +90,65 @@ export default function ImageInput({
       console.log("Form Data:", formData);
 
       setLoadingText(
-        "Just a moment while we tailor your image summary and prepare our chatbot for interaction.",
+        "Just a moment while we tailor your image summary and prepare our chatbot for interaction."
       );
       setLoadingTextColor("text-black");
       setImageFile(file);
       setImageFileName(file.name);
 
-      try {
-        const imageExtractionResponse = await fetch("/api/imagetextextract", {
-          method: "POST",
-          body: formData,
-        });
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        if (event.target?.result) {
+          const image = event.target.result;
+          try {
+            const text = await Tesseract.recognize(image as string, "eng");
+            // setExtractedText(text.data.text);
 
-        if (!imageExtractionResponse.ok) {
-          setLoadingVisibility("none");
-          setCloseVisibility("block");
-          setLoadingText(
-            "Error Extracting Text: We were unable to extract the text from your image, please try again later.",
-          );
-          setLoadingTextColor("text-red-500");
-          return;
+            // Send the extracted text to the backend API
+            const summaryResponse = await fetch("/api/assistantinitialimage", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ imageText: text.data.text }),
+            });
+
+            if (!summaryResponse.ok) {
+              const errorData = await summaryResponse.json();
+              setLoadingVisibility("none");
+              setCloseVisibility("block");
+              setLoadingText(
+                "Error Analysing Image: We were unable to summarise your Image, please try again later."
+              );
+              setLoadingTextColor("text-red-500");
+              setIsLoading(false);
+              return;
+            }
+            const { summary, threadId, highlights, assistant_id } =
+              await summaryResponse.json();
+            setVideoTitle(file.name);
+            setHighlights(highlights);
+            setThreadId(threadId);
+            setVideoSummary(summary);
+            setChatbotAssistantID(assistant_id);
+            console.log("Setting Assistant ID:", assistant_id);
+            setGenerateSummaryButtonText("Analyse another video");
+            setVideoAnalysed(true);
+            scrollToBottom();
+          } catch (error) {
+            alert("Failed to generate summary. Please try again.");
+          } finally {
+            setIsLoading(false);
+          }
         }
-
-        const { extractedText } = await imageExtractionResponse.json();
-        console.log("Extracted Image Text:", extractedText);
-
-        let endpoint = "/api/assistantinitialpdf";
-
-        const summaryResponse = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ imageText: extractedText }),
-        });
-
-        if (!summaryResponse.ok) {
-          const errorData = await summaryResponse.json();
-          setLoadingVisibility("none");
-          setCloseVisibility("block");
-          setLoadingText(
-            "Error Analysing Image: We were unable to summarise your Image, please try again later.",
-          );
-          setLoadingTextColor("text-red-500");
-          return;
-        }
-
-        const { summary, threadId, highlights, assistant_id } =
-          await summaryResponse.json();
-        setVideoTitle(file.name);
-        setHighlights(highlights);
-        setThreadId(threadId);
-        setVideoSummary(summary);
-        setChatbotAssistantID(assistant_id);
-        console.log("Setting Assistant ID:", assistant_id);
-        setGenerateSummaryButtonText("Analyse another video");
-        setVideoAnalysed(true);
-        setIsLoading(false);
-        scrollToBottom();
-      } catch (error) {
-        alert("Failed to generate summary. Please try again.");
-      }
-
-      setIsLoading(false);
+      };
+      reader.readAsDataURL(file);
     } else {
       alert("Please upload a valid image.");
+      setIsLoading(false);
     }
   };
+
   return (
     <div className="max-w-4xl mx-auto p-8 dark:bg-dot-white/[0.2] bg-dot-black/[0.2]">
       {isLoading && (
@@ -173,9 +167,9 @@ export default function ImageInput({
         AI Image Summariser Chatbot
       </h1>
       <p className="text-lg text-center mb-8 animate-fade-up animate-once animate-duration-[500ms]">
-        Discover insights from images in seconds. Simply upload a PDF to receive
-        a detailed summary, the highlights, and access to a chatbot that&apos;s
-        trained specifically on the imagess content.
+        Discover insights from images in seconds. Simply upload an image to
+        receive a detailed summary, the highlights, and access to a chatbot
+        that&apos;s trained specifically on the PDF&apos;s content.
       </p>
       <div className="flex justify-center items-center border-2 border-dashed border-red-600 rounded-lg p-4">
         <label className="relative inline-flex h-12 overflow-hidden hover:shadow-lg transition duration-300 ease-in-out dark:hover:shadow-white/30 rounded-full p-[1px] hover:focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 cursor-pointer">

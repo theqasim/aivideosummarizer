@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     const runRetrieve = await openai.beta.threads.runs.retrieve(
       thread.id,
-      run.id,
+      run.id
     );
     while (runStatus !== "completed") {
       console.log("waiting for completion", runStatus);
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       try {
         const updatedRun = await openai.beta.threads.runs.retrieve(
           thread.id,
-          run.id,
+          run.id
         );
         runStatus = updatedRun.status;
 
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
         role: "user",
         content:
           "Generate a bullet point list of the highlights for the entire TXT file",
-      },
+      }
     );
 
     const highlightsRun = await openai.beta.threads.runs.create(thread.id, {
@@ -83,13 +83,13 @@ export async function POST(req: Request) {
 
     const runRetrieveHighlights = await openai.beta.threads.runs.retrieve(
       threadId,
-      run.id,
+      run.id
     );
 
     while (highlightsRunStatus !== "completed") {
       const highlightsUpdatedRun = await openai.beta.threads.runs.retrieve(
         thread.id,
-        highlightsRun.id,
+        highlightsRun.id
       );
 
       highlightsRunStatus = highlightsUpdatedRun.status;
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
     }
 
     const messagesResponseHighlights = await openai.beta.threads.messages.list(
-      thread.id,
+      thread.id
     );
 
     console.log("Thread ID: ", threadId);
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   } catch (error) {
     return new Response(JSON.stringify({ error: error }), {

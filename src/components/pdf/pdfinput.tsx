@@ -34,7 +34,7 @@ export default function PdfInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -131,7 +131,7 @@ export default function PdfInput({
       reader.onload = async (event) => {
         if (event.target?.result instanceof ArrayBuffer) {
           setLoadingText(
-            "Just a moment while we tailor your PDF summary and prepare our chatbot for interaction.",
+            "Just a moment while we tailor your PDF summary and prepare our chatbot for interaction."
           );
           setLoadingTextColor("text-black");
           const arrayBuffer = event.target.result;
@@ -160,7 +160,7 @@ export default function PdfInput({
               setLoadingVisibility("none");
               setCloseVisibility("block");
               setLoadingText(
-                "Error Analysing PDF: We were unable to summarise your PDF, please try again later.",
+                "Error Analysing PDF: We were unable to summarise your PDF, please try again later."
               );
               setLoadingTextColor("text-red-500");
               return;

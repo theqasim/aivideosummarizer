@@ -42,7 +42,7 @@ export default function YouTubeURLInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -122,7 +122,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analysing Video: Your video has no subtitles available therefore it cannot be analysed",
+          "Error Analysing Video: Your video has no subtitles available therefore it cannot be analysed"
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -140,13 +140,13 @@ export default function YouTubeURLInput({
 
       if (longTranscriptLengthStatus == true) {
         setLoadingText(
-          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
+          "We've detected a longer video, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!"
         );
         setLoadingTextColor("text-black");
         endpoint = "/api/longassistantinitial";
       } else {
         setLoadingText(
-          "Just a moment while we tailor your video summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your video summary and prepare our chatbot for interaction."
         );
         setLoadingTextColor("text-black");
       }
@@ -164,7 +164,7 @@ export default function YouTubeURLInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analysing Video: We were unable to summarise your video, please try again later.",
+          "Error Analysing Video: We were unable to summarise your video, please try again later."
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -238,7 +238,7 @@ export default function YouTubeURLInput({
       reader.onload = async (event) => {
         if (event.target?.result instanceof ArrayBuffer) {
           setLoadingText(
-            "Just a moment while we tailor your PDF summary and prepare our chatbot for interaction.",
+            "Just a moment while we tailor your PDF summary and prepare our chatbot for interaction."
           );
           setLoadingTextColor("text-black");
           const arrayBuffer = event.target.result;

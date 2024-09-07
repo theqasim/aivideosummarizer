@@ -35,7 +35,7 @@ export default function WordInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -97,7 +97,7 @@ export default function WordInput({
         console.log("File:", file);
 
         setLoadingText(
-          "Just a moment while we tailor your word document summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your word document summary and prepare our chatbot for interaction."
         );
 
         setLoadingTextColor("text-black");
@@ -114,7 +114,7 @@ export default function WordInput({
             setLoadingVisibility("none");
             setCloseVisibility("block");
             setLoadingText(
-              "Error Extracting Text: We were unable to extract the text from your document, please try again later.",
+              "Error Extracting Text: We were unable to extract the text from your document, please try again later."
             );
             setLoadingTextColor("text-red-500");
             return;
@@ -138,7 +138,7 @@ export default function WordInput({
             setLoadingVisibility("none");
             setCloseVisibility("block");
             setLoadingText(
-              "Error Analysing Word Document: We were unable to summarise your word document, please try again later.",
+              "Error Analysing Word Document: We were unable to summarise your word document, please try again later."
             );
             setLoadingTextColor("text-red-500");
             return;

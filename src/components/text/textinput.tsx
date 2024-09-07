@@ -42,7 +42,7 @@ export default function TextInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Analysing text, please wait...",
+    "Analysing text, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -99,12 +99,12 @@ export default function TextInput({
     try {
       if (parseInt(userText) === 100000) {
         setLoadingText(
-          "We've detected a large amount of text, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!",
+          "We've detected a large amount of text, so we'll need a bit more time to craft your summary and get our chatbot ready for you. Thank you for your patience!"
         );
         setLoadingTextColor("text-black");
       } else {
         setLoadingText(
-          "Just a moment while we tailor your text summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your text summary and prepare our chatbot for interaction."
         );
         setLoadingTextColor("text-black");
       }
@@ -122,7 +122,7 @@ export default function TextInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analysing Text: We were unable to summarise your text, please try again later.",
+          "Error Analysing Text: We were unable to summarise your text, please try again later."
         );
         setLoadingTextColor("text-red-500");
         return;

@@ -1,52 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
+import formidable from "formidable";
+import { promises as fs } from "fs";
 import Tesseract from "tesseract.js";
+import path from "path";
+import os from "os";
 
-export const runtime = "nodejs";
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
-export async function POST(request: NextRequest) {
+const readFile = (req: NextRequest) =>
+  new Promise<{ fields: formidable.Fields; files: formidable.Files }>(
+    (resolve, reject) => {
+      const form = formidable({
+        uploadDir: os.tmpdir(),
+        keepExtensions: true,
+      });
+      form.parse(req as any, (err, fields, files) => {
+        if (err) reject(err);
+        else resolve({ fields, files });
+      });
+    }
+  );
+
+export async function POST(req: NextRequest) {
   try {
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const { files } = await readFile(req);
+    const file = files.file as unknown as formidable.File;
+    const filePath = file.filepath;
 
-    if (!file) {
-      throw new Error("No file uploaded");
-    }
+    const text = await Tesseract.recognize(filePath, "eng");
+    await fs.unlink(filePath); // Clean up uploaded file
 
-    // Ensure the file is an image
-    const validImageTypes = ["image/png", "image/jpeg", "image/gif"];
-    if (!validImageTypes.includes(file.type)) {
-      throw new Error(
-        "Invalid file type. Please upload a PNG, JPEG, or GIF image.",
-      );
-    }
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64String = buffer.toString("base64");
-    const dataUrl = `data:${file.type};base64,${base64String}`;
-
-    // const worker = Tesseract.createWorker({
-    //   logger: (m) => console.log(m), // Optional logger
-    // });
-
-    // await worker.load();
-    // await worker.loadLanguage("eng");
-    // await worker.initialize("eng");
-    // const {
-    //   data: { text },
-    // } = await worker.recognize(dataUrl);
-    // await worker.terminate();
-
-    const text = "test";
-
-    return NextResponse.json({
-      extractedText: text,
-    });
+    return NextResponse.json({ extractedText: text.data.text });
   } catch (error) {
-    console.error("Error extracting text:", error);
     return NextResponse.json(
-      { error: "Failed to extract text from file." },
-      { status: 500 },
+      { error: "Error extracting text from image" },
+      { status: 500 }
     );
   }
 }

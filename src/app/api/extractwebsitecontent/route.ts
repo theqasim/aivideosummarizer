@@ -25,13 +25,13 @@ export async function POST(request: NextRequest) {
       }),
       {
         status: 200,
-      },
+      }
     );
   } catch (error) {
     console.error("Error extracting text:", error);
     return NextResponse.json(
       { error: "Failed to extract text from file." },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

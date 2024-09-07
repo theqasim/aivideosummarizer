@@ -56,8 +56,7 @@ body {
   --dot-color: #ff0000;
   --dot-size: 1px;
   --dot-space: 40px;
-  background:
-    linear-gradient(
+  background: linear-gradient(
         90deg,
         var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
         transparent 1%

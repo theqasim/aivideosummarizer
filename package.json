@@ -15,6 +15,7 @@
     "@radix-ui/react-tabs": "^1.0.4",
     "@vercel/analytics": "^1.2.2",
     "ai": "^3.0.16",
+    "assemblyai": "^4.6.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.364.0",
@@ -30,7 +31,8 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-animated": "^1.0.1",
-    "tesseract.js": "^5.1.0"
+    "tesseract.js": "^5.1.0",
+    "text-from-image": "^1.1.1"
   },
   "devDependencies": {
     "@types/formidable": "^3.4.5",

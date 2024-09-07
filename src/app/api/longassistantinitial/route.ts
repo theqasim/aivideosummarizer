@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     while (runStatus !== "completed") {
       const updatedRun = await openai.beta.threads.runs.retrieve(
         thread.id,
-        run.id,
+        run.id
       );
       runStatus = updatedRun.status;
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
         role: "user",
         content:
           "Generate a bullet point list of the highlights for the entire video",
-      },
+      }
     );
 
     const highlightsRun = await openai.beta.threads.runs.create(thread.id, {
@@ -96,13 +96,13 @@ export async function POST(req: Request) {
 
     const runRetrieveHighlights = await openai.beta.threads.runs.retrieve(
       thread.id,
-      run.id,
+      run.id
     );
 
     while (highlightsRunStatus !== "completed") {
       const highlightsUpdatedRun = await openai.beta.threads.runs.retrieve(
         thread.id,
-        highlightsRun.id,
+        highlightsRun.id
       );
 
       highlightsRunStatus = highlightsUpdatedRun.status;
@@ -111,7 +111,7 @@ export async function POST(req: Request) {
     }
 
     const messagesResponseHighlights = await openai.beta.threads.messages.list(
-      thread.id,
+      thread.id
     );
 
     const firstElementHighlights = messagesResponseHighlights.data[0]
@@ -125,7 +125,7 @@ export async function POST(req: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   } catch (error) {
     return new Response(JSON.stringify({ error: error }), {

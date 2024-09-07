@@ -42,14 +42,14 @@ export default function WebsiteInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Analysing text, please wait...",
+    "Analysing text, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
   const [loadingVisibility, setLoadingVisibility] = useState("block");
   const [closeVisibility, setCloseVisibility] = useState("none");
   const [generateSummaryButtonText, setGenerateSummaryButtonText] = useState(
-    "Analyse Website Content",
+    "Analyse Website Content"
   );
   const handleInputChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -99,7 +99,7 @@ export default function WebsiteInput({
 
     try {
       setLoadingText(
-        "Just a moment while we tailor your text summary and prepare our chatbot for interaction.",
+        "Just a moment while we tailor your text summary and prepare our chatbot for interaction."
       );
       setLoadingTextColor("text-black");
 
@@ -126,14 +126,14 @@ export default function WebsiteInput({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ userUrl: userURL }),
-        },
+        }
       );
 
       if (!websiteTextExtractionResponse.ok) {
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Extracting Website Content: We were unable to extract content from the website, please try again later.",
+          "Error Extracting Website Content: We were unable to extract content from the website, please try again later."
         );
         setLoadingTextColor("text-red-500");
         return;
@@ -156,7 +156,7 @@ export default function WebsiteInput({
         setLoadingVisibility("none");
         setCloseVisibility("block");
         setLoadingText(
-          "Error Analysing Text: We were unable to summarise your text, please try again later.",
+          "Error Analysing Text: We were unable to summarise your text, please try again later."
         );
         setLoadingTextColor("text-red-500");
         return;

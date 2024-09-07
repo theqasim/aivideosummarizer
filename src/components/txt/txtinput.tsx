@@ -35,7 +35,7 @@ export default function TxtInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -92,7 +92,7 @@ export default function TxtInput({
 
         console.log("Extracted Text:", textContent);
         setLoadingText(
-          "Just a moment while we tailor your TXT file summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your TXT file summary and prepare our chatbot for interaction."
         );
 
         setLoadingTextColor("text-black");
@@ -115,7 +115,7 @@ export default function TxtInput({
             setLoadingVisibility("none");
             setCloseVisibility("block");
             setLoadingText(
-              "Error Analysing TXT file: We were unable to summarise your TXT file, please try again later.",
+              "Error Analysing TXT file: We were unable to summarise your TXT file, please try again later."
             );
             setLoadingTextColor("text-red-500");
             return;

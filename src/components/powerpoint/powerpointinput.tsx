@@ -35,7 +35,7 @@ export default function PowerpointInput({
   const [isLoading, setIsLoading] = useState(false);
 
   const [loadingText, setLoadingText] = useState(
-    "Retrieving video, please wait...",
+    "Retrieving video, please wait..."
   );
   const [loadingTextColor, setLoadingTextColor] = useState("text-black");
   const [videoAnalysed, setVideoAnalysed] = useState(false);
@@ -88,7 +88,7 @@ export default function PowerpointInput({
     if (
       file &&
       file.type.match(
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
       )
     ) {
       try {
@@ -98,7 +98,7 @@ export default function PowerpointInput({
         console.log("File:", file);
 
         setLoadingText(
-          "Just a moment while we tailor your powerpoint summary and prepare our chatbot for interaction.",
+          "Just a moment while we tailor your powerpoint summary and prepare our chatbot for interaction."
         );
 
         setLoadingTextColor("text-black");
@@ -115,7 +115,7 @@ export default function PowerpointInput({
             setLoadingVisibility("none");
             setCloseVisibility("block");
             setLoadingText(
-              "Error Extracting Text: We were unable to extract the text from your document, please try again later.",
+              "Error Extracting Text: We were unable to extract the text from your document, please try again later."
             );
             setLoadingTextColor("text-red-500");
             return;
@@ -139,7 +139,7 @@ export default function PowerpointInput({
             setLoadingVisibility("none");
             setCloseVisibility("block");
             setLoadingText(
-              "Error Analysing Powerpoint: We were unable to summarise your powerpoint, please try again later.",
+              "Error Analysing Powerpoint: We were unable to summarise your powerpoint, please try again later."
             );
             setLoadingTextColor("text-red-500");
             return;
